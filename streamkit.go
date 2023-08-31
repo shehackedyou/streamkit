@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	ewmh "github.com/linuxdeepin/go-x11-client/util/wm/ewmh"
 	broadcast "github.com/shehackedyou/streamkit/broadcast"
 	obs "github.com/shehackedyou/streamkit/broadcast/obs"
 	show "github.com/shehackedyou/streamkit/broadcast/show"
@@ -13,12 +14,12 @@ import (
 
 type Toolkit struct {
 	// NOTE: Short-poll rate [we will rewrite without short polling after]
-	Delay   time.Duration
-	OBS     *obs.Client
-	Xserver *xserver.XServer
+	Delay time.Duration
+	OBS   *obs.Client
+	X11   *xserver.X11
 	// TODO: Our local copy of the show is entirely separate from obs.Client so we
 	// can change that out while maintaining logic and a data object
-	//Show   *broadcast.Show
+	Show   *broadcast.Show
 	Config map[string]string
 }
 
@@ -51,15 +52,9 @@ func New() (toolkit *Toolkit) {
 
 	fmt.Printf("before toolkit = &Toolkit\n")
 
-	//fmt.Printf("trying ConnectToX11\n")
-	//x11Connection := x11.ConnectToX11()
+	//fmt.Printf("xserver.Client: %v\n", toolkit.X11.Client)
 
-	//fmt.Printf("XServer: %v\n", XServer)
-
-	//XServer.Client.CacheActiveWindow()
-
-	//fmt.Printf("XServer.Client: %v\n", XServer.Client)
-
+	fmt.Printf("trying ConnectToX11\n")
 	toolkit = &Toolkit{
 		Config: showConfig,
 		Show: &broadcast.Show{
@@ -70,16 +65,32 @@ func New() (toolkit *Toolkit) {
 			//Mode: this is studio vs direct stream which is USELESS
 			// ui concept only really
 		},
-		//X11: &x11.XServer{
-		//	Client: XServer.ConnectToX11("10.100.100.1:10"),
-		//},
+		x11: &xserver.X11{
+			Client: xserver.ConnectToX11("localhost:10"),
+		},
 		Delay: 1500 * time.Millisecond,
 	}
 
-	//fmt.Printf("x11 active window Title %v\n", toolkit.X11.ActiveWindow().Title)
-	//fmt.Printf("x11 active window PID %v\n", toolkit.X11.ActiveWindow().PID)
-	//fmt.Printf("XServer active window Title %v\n", XServer.ActiveWindow().Title)
-	//fmt.Printf("XServer active window PID %v\n", XServer.ActiveWindow().PID)
+	//toolkit.X11.CacheActiveWindow()
+
+	fmt.Printf("X11: %v\n", toolkit.X11)
+
+	fmt.Printf("X11.Client %v\n", toolkit.X11.Client)
+
+	fmt.Printf("X11 active window Title %v\n", toolkit.X11)
+
+	fmt.Printf("X11 active window Title %v\n", toolkit.X11.Client)
+
+	//fmt.Printf("X11 Window %v\n", toolkit.X11.CurrentWindow())
+
+	activeWindow, err := ewmh.GetActiveWindow(toolkit.X11.Client).Reply(toolkit.X11.Client)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("active_window: %v\n", activeWindow)
+
+	//fmt.Printf("X11 active window PID %v\n", toolkit.X11.ActiveWindow().PID)
 
 	//toolkit.parseScenes()
 
