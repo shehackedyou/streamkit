@@ -1,7 +1,7 @@
 package show
 
 import (
-	scene "github.com/wade-welles/streamkit/broadcast/show/scene"
+	scene "github.com/shehackedyou/streamkit/broadcast/show/scene"
 )
 
 type Scene struct {

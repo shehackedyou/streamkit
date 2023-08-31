@@ -1,7 +1,7 @@
 package broadcast
 
 import (
-	show "github.com/wade-welles/streamkit/broadcast/show"
+	show "github.com/shehackedyou/streamkit/broadcast/show"
 )
 
 // TODO: We will need to restructure the goobs from our show object since it

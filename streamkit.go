@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"time"
 
-	broadcast "github.com/wade-welles/streamkit/broadcast"
-	obs "github.com/wade-welles/streamkit/broadcast/obs"
-	show "github.com/wade-welles/streamkit/broadcast/show"
+	broadcast "github.com/shehackedyou/streamkit/broadcast"
+	obs "github.com/shehackedyou/streamkit/broadcast/obs"
+	show "github.com/shehackedyou/streamkit/broadcast/show"
 
-	x11 "github.com/wade-welles/streamkit/x11"
+	x11 "github.com/shehackedyou/streamkit/x11"
 )
 
 type Toolkit struct {

@@ -1,4 +1,4 @@
-module github.com/wade-welles/streamkit
+module github.com/shehackedyou/streamkit
 
 go 1.19
 
@@ -21,7 +21,7 @@ require (
 	github.com/multiverse-os/loading v0.0.0-20230205140225-67dcaf84ca47 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
-	github.com/wade-welles/streamkit/x11 v0.0.0-20230514173244-6c800870f531
+	github.com/shehackedyou/streamkit/x11 v0.0.0-20230514173244-6c800870f531
 	golang.org/x/sys v0.8.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )

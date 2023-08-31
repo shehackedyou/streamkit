@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	streamkit "github.com/wade-welles/streamkit"
+	streamkit "github.com/shehackedyou/streamkit"
 
 	cli "github.com/multiverse-os/cli"
 )
