@@ -6,7 +6,7 @@ import (
 	"time"
 
 	//x11 "github.com/linuxdeepin/go-x11-client"
-	x11 "github.com/wade-welles/streamkit/x11"
+	x11 "github.com/shehackedyou/streamkit/x11"
 
 	ewmh "github.com/linuxdeepin/go-x11-client/util/wm/ewmh"
 )
