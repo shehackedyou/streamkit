@@ -5,9 +5,7 @@ import (
 	"io/ioutil"
 	"time"
 
-	//x11 "github.com/linuxdeepin/go-x11-client"
-	x11 "github.com/shehackedyou/streamkit/x11"
-
+	x11 "github.com/linuxdeepin/go-x11-client"
 	ewmh "github.com/linuxdeepin/go-x11-client/util/wm/ewmh"
 )
 
@@ -31,10 +29,20 @@ type X11 struct {
 	ActiveWindowChangedAt time.Time
 }
 
+func ConnectToX11(addr string) *x11.Conn {
+	conn, err := x11.NewConnDisplay(addr)
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
+	}
+	fmt.Printf("conn: %v\n", conn)
+
+	return conn
+}
+
 // TODO: If we can move some of these to be methods of Window struct, it would
 // be better organized but there will be obvious limitations we have to work
 // through
-func (x *x11) CurrentWindowTitle() string {
+func (x *X11) CurrentWindowTitle() string {
 	return x.ActiveWindow().Title
 }
 
@@ -82,14 +90,14 @@ func (x *X11) ActiveWindow() *Window {
 	return cachedWindow
 }
 
-func (x *x11) InitActiveWindow() *Window {
+func (x *X11) InitActiveWindow() *Window {
 	activeWindow := x.ActiveWindow()
 	x.ActiveWindowTitle = activeWindow.Title
 	x.ActiveWindowChangedAt = time.Now()
 	return activeWindow
 }
 
-func (x *x11) CacheActiveWindow() *Window {
+func (x *X11) CacheActiveWindow() *Window {
 	activeWindow := x.ActiveWindow()
 	x.ActiveWindowTitle = x.ActiveWindow().Title
 	x.ActiveWindowChangedAt = time.Now()

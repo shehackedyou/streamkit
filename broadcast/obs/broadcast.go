@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	goobs "github.com/andreykaipov/goobs"
-
 	sceneitems "github.com/andreykaipov/goobs/api/requests/sceneitems"
 )
 
