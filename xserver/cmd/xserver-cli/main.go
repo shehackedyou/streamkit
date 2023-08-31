@@ -6,12 +6,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/wade-welles/streamkit/x11"
+	xserver "github.com/shehackedyou/streamkit/xserver"
 )
 
 type Application struct {
 	Name  string
-	X11   *x11.X11
+	X11   *xserver.XServer
 	Delay time.Duration
 	Paths map[PathType]Path
 }
@@ -41,9 +41,9 @@ func main() {
 	userHome, _ := os.UserHomeDir()
 
 	x11App := Application{
-		Name: "x11-cli",
-		X11: &x11.X11{
-			Client: x11.ConnectToX11("localhost:10"),
+		Name: "xserver-cli",
+		X11: &xserver.XServer{
+			Client: xserver.ConnectToX11("localhost:10"),
 		},
 		Delay: 2 * time.Second,
 	}

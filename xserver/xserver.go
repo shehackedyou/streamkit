@@ -1,12 +1,14 @@
 package xserver
 
 import (
+	"fmt"
 	"time"
-	//x11 "github.com/linuxdeepin/go-x11-client"
+
+	x11 "github.com/linuxdeepin/go-x11-client"
 )
 
 type XServer struct {
-	//Client *xserver.Conn // 	xdisplay       *x.Conn
+	Client *x11.Conn // 	xdisplay       *x.Conn
 
 	// TODO: Populated by previous active windows
 	//          (THIS REQUIRES UNIQUE-NESS CHECK)
@@ -25,15 +27,15 @@ type XServer struct {
 	ActiveWindowChangedAt time.Time
 }
 
-//func ConnectToX11(addr string) *x11.Conn {
-//	conn, err := x11.NewConnDisplay(addr)
-//	if err != nil {
-//		fmt.Printf("error: %v\n", err)
-//	}
-//	fmt.Printf("conn: %v\n", conn)
-//
-//	return conn
-//}
+func ConnectToX11(addr string) *x11.Conn {
+	conn, err := x11.NewConnDisplay(addr)
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
+	}
+	fmt.Printf("conn: %v\n", conn)
+
+	return conn
+}
 
 // TODO: If we can move some of these to be methods of Window struct, it would
 // be better organized but there will be obvious limitations we have to work
