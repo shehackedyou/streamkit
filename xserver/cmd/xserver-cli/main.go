@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	x11 "github.com/shehackedyou/streamkit/x11"
+	"github.com/wade-welles/streamkit/x11"
 )
 
 type Application struct {

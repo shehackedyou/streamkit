@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	streamkit "github.com/shehackedyou/streamkit"
-
 	cli "github.com/multiverse-os/cli"
+	streamkit "github.com/shehackedyou/streamkit"
 )
 
 func main() {
@@ -60,21 +59,21 @@ func main() {
 				),
 			},
 		),
-		//Actions: cli.Actions{
-		//	OnStart: func(c *cli.Context) error {
-		//		c.CLI.Log("OnStart action")
-		//		//toolkit.
-		//		return nil
-		//	},
-		//	Fallback: func(c *cli.Context) error {
-		//		c.CLI.Log("Fallback action")
-		//		return nil
-		//	},
-		//	OnExit: func(c *cli.Context) error {
-		//		c.CLI.Log("on exit action")
-		//		return nil
-		//	},
-		//},
+		Actions: cli.Actions{
+			OnStart: func(c *cli.Context) error {
+				c.CLI.Log("OnStart action")
+				//toolkit.
+				return nil
+			},
+			Fallback: func(c *cli.Context) error {
+				c.CLI.Log("Fallback action")
+				return nil
+			},
+			OnExit: func(c *cli.Context) error {
+				c.CLI.Log("on exit action")
+				return nil
+			},
+		},
 	})
 
 	if len(initErrors) == 0 {

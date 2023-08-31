@@ -1,4 +1,4 @@
-package x11
+package xserver
 
 // TODO: Some useful
 
