@@ -28,21 +28,19 @@ type Toolkit struct {
 // should assumingly always be 127.0.0.1 whereas obs reasonably could be
 // different
 func New() (toolkit *Toolkit) {
-	//xserver.TestFunc()
-
 	fmt.Printf("start of New()\n")
 
 	// TODO: Show should be from config, and obs and x11 information. Logically
 	// stored in ~/.config/$APP_NAME and the local data should be
 	// ~/.local/share/$APP_NAME
 
-	showConfig := map[string]string{
-		"name":     "she hacked you",
-		"obs_host": "10.100.100.1:4444",
-	}
+	//showConfig := map[string]string{
+	//	"name":     "she hacked you",
+	//	"obs_host": "10.100.100.1:4444",
+	//}
 
 	fmt.Printf("attempting to connect to obs wsAPI\n")
-	wsAPI := obs.Connect(showConfig["obs_host"])
+	//wsAPI := obs.Connect(showConfig["obs_host"])
 
 	//wayland.WaylandTest()
 
@@ -57,6 +55,7 @@ func New() (toolkit *Toolkit) {
 	//fmt.Printf("xserver.Client: %v\n", toolkit.X11.Client)
 
 	fmt.Printf("trying ConnectToX11\n")
+
 	toolkit = &Toolkit{
 		Config: showConfig,
 		Show: &broadcast.Show{
@@ -73,7 +72,6 @@ func New() (toolkit *Toolkit) {
 		Delay: 1500 * time.Millisecond,
 	}
 
-	xserver.TestFunc()
 	//toolkit.X11.CacheActiveWindow()
 
 	fmt.Printf("X11: %v\n", toolkit.XWayland)

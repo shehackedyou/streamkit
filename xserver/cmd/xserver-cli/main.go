@@ -43,7 +43,7 @@ func main() {
 	x11App := Application{
 		Name: "xserver-cli",
 		X11: &xserver.X11{
-			Client: xserver.ConnectTo("localhost:10"),
+			Client: xserver.Connect("localhost:10"),
 		},
 		Delay: 2 * time.Second,
 	}

@@ -96,15 +96,11 @@ func MarshalAlignment(alignment int) Alignment { return Alignment(alignment) }
 // function) or this should be a method on OBS after it is created you connect.
 func Connect(host string) *goobs.Client {
 	fmt.Printf("start of OBS\n")
-	client, err := goobs.New(
-		"10.100.100.1:4444",
-	)
-	fmt.Printf("err: %v", err)
-
-	fmt.Printf("client: %v\n", client)
-	// TODO: If we fail to connect, we could have streamkit launch obs
+	client, err := goobs.New(host)
 	if err != nil {
-		fmt.Printf("error: %v", err)
+		fmt.Printf("err: %v", err)
+	} else {
+		fmt.Printf("client: %v\n", client)
 	}
 
 	fmt.Print("returning client\n")
@@ -194,15 +190,9 @@ type Client struct {
 }
 
 func LoadClient(addr string) Client {
-	wsAPI := ConnectToOBS(addr)
-
-	client := Client{
-		WS: wsAPI,
+	return Client{
+		WS: Connect(addr),
 	}
-
-	fmt.Printf("wsAPI: %v\n")
-
-	return client
 }
 
 func (obs Client) IsMode(mode Mode) bool {
