@@ -34,9 +34,10 @@ func New() (toolkit *Toolkit) {
 	// stored in ~/.config/$APP_NAME and the local data should be
 	// ~/.local/share/$APP_NAME
 
-	showConfig := map[string]string{
-		"name":     "she hacked you",
-		"obs_host": "10.100.100.1:4444",
+	toolkitConfig := map[string]string{
+		"name":         "she hacked you",
+		"obs_host":     "10.100.100.1:4444",
+		"xserver_host": "localhost:10",
 	}
 
 	fmt.Printf("attempting to connect to obs wsAPI\n")
@@ -56,17 +57,17 @@ func New() (toolkit *Toolkit) {
 	fmt.Printf("trying ConnectToX11\n")
 
 	toolkit = &Toolkit{
-		Config: showConfig,
+		Config: toolkitConfig,
 		Show: &broadcast.Show{
 			Scenes: make([]*show.Scene, 0),
 		},
 		OBS: &obs.Client{
-			WS: obs.Connect(showConfig["obs_host"]),
+			WS: obs.Connect(toolkitConfig["obs_host"]),
 			//Mode: this is studio vs direct stream which is USELESS
 			// ui concept only really
 		},
 		XWayland: &xserver.X11{
-			Client: xserver.Connect("localhost:10"),
+			Client: xserver.Connect(toolkitConfig["xserver_host"]),
 		},
 		Delay: 1500 * time.Millisecond,
 	}
