@@ -8,6 +8,7 @@ require (
 	github.com/linuxdeepin/go-x11-client v0.0.0-20230710064023-230ea415af17
 	github.com/multiverse-os/cli v0.0.0-20230212101701-e7017a44551d
 	github.com/shehackedyou/streamkit/broadcast v0.0.0-20230831104534-55c0b85adeac
+	github.com/shehackedyou/streamkit/xserver v0.0.0-20230903080529-684454b5b956
 	golang.org/x/term v0.8.0
 )
 
@@ -22,6 +23,5 @@ require (
 	github.com/multiverse-os/cli/terminal/ansi v0.0.0-00010101000000-000000000000 // indirect
 	github.com/multiverse-os/loading v0.0.0-20230205140225-67dcaf84ca47 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
-	github.com/shehackedyou/streamkit/xserver v0.0.0-20230831174115-1359eae3ded3 // indirect
 	golang.org/x/sys v0.8.0 // indirect
 )

@@ -94,7 +94,7 @@ func MarshalAlignment(alignment int) Alignment { return Alignment(alignment) }
 
 // TODO: This should either give the full OBS object returned (like an init
 // function) or this should be a method on OBS after it is created you connect.
-func ConnectToOBS(host string) *goobs.Client {
+func Connect(host string) *goobs.Client {
 	fmt.Printf("start of OBS\n")
 	client, err := goobs.New(
 		"10.100.100.1:4444",

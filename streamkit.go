@@ -16,7 +16,7 @@ type Toolkit struct {
 	// NOTE: Short-poll rate [we will rewrite without short polling after]
 	Delay    time.Duration
 	OBS      *obs.Client
-	XWayland *xserver.XWayland
+	XWayland *xserver.X11
 	// TODO: Our local copy of the show is entirely separate from obs.Client so we
 	// can change that out while maintaining logic and a data object
 	Show   *broadcast.Show
@@ -28,6 +28,7 @@ type Toolkit struct {
 // should assumingly always be 127.0.0.1 whereas obs reasonably could be
 // different
 func New() (toolkit *Toolkit) {
+	//xserver.TestFunc()
 
 	fmt.Printf("start of New()\n")
 
@@ -41,7 +42,7 @@ func New() (toolkit *Toolkit) {
 	}
 
 	fmt.Printf("attempting to connect to obs wsAPI\n")
-	wsAPI := obs.ConnectToOBS(showConfig["obs_host"])
+	wsAPI := obs.Connect(showConfig["obs_host"])
 
 	//wayland.WaylandTest()
 
@@ -66,13 +67,13 @@ func New() (toolkit *Toolkit) {
 			//Mode: this is studio vs direct stream which is USELESS
 			// ui concept only really
 		},
-		XWayland: &xserver.XWayland{
-			Client: xserver.ConnectToX11("localhost:10"),
+		XWayland: &xserver.X11{
+			Client: xserver.Connect("localhost:10"),
 		},
 		Delay: 1500 * time.Millisecond,
 	}
 
-	toolkit.XWayland.TestFunc()
+	xserver.TestFunc()
 	//toolkit.X11.CacheActiveWindow()
 
 	fmt.Printf("X11: %v\n", toolkit.XWayland)

@@ -27,7 +27,7 @@ type X11 struct {
 	CurrentWindowChangedAt time.Time
 }
 
-func ConnectTo(addr string) *x11.Conn {
+func Connect(addr string) *x11.Conn {
 	conn, err := x11.NewConnDisplay(addr)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)

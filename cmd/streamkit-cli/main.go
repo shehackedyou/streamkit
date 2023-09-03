@@ -62,6 +62,7 @@ func main() {
 		Actions: cli.Actions{
 			OnStart: func(c *cli.Context) error {
 				c.CLI.Log("OnStart action")
+
 				//toolkit.
 				return nil
 			},
