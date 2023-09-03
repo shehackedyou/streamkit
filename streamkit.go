@@ -34,13 +34,12 @@ func New() (toolkit *Toolkit) {
 	// stored in ~/.config/$APP_NAME and the local data should be
 	// ~/.local/share/$APP_NAME
 
-	//showConfig := map[string]string{
-	//	"name":     "she hacked you",
-	//	"obs_host": "10.100.100.1:4444",
-	//}
+	showConfig := map[string]string{
+		"name":     "she hacked you",
+		"obs_host": "10.100.100.1:4444",
+	}
 
 	fmt.Printf("attempting to connect to obs wsAPI\n")
-	//wsAPI := obs.Connect(showConfig["obs_host"])
 
 	//wayland.WaylandTest()
 
@@ -62,7 +61,7 @@ func New() (toolkit *Toolkit) {
 			Scenes: make([]*show.Scene, 0),
 		},
 		OBS: &obs.Client{
-			WS: wsAPI,
+			WS: obs.Connect(showConfig["obs_host"]),
 			//Mode: this is studio vs direct stream which is USELESS
 			// ui concept only really
 		},

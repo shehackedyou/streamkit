@@ -7,12 +7,15 @@ replace github.com/multiverse-os/cli/terminal/ansi => github.com/multiverse-os/a
 require (
 	github.com/linuxdeepin/go-x11-client v0.0.0-20230710064023-230ea415af17
 	github.com/multiverse-os/cli v0.0.0-20230212101701-e7017a44551d
-	//github.com/shehackedyou/streamkit/broadcast v0.0.0-20230903092537-bea8fa5d9139
 	golang.org/x/term v0.8.0
 )
 
 require (
-	github.com/andreykaipov/goobs v0.12.0 // indirect
+	github.com/andreykaipov/goobs v0.12.0
+	github.com/shehackedyou/streamkit/xserver v0.0.0-20230903092537-bea8fa5d9139
+)
+
+require (
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
