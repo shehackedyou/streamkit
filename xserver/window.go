@@ -38,14 +38,14 @@ type Windows []*Window
 // TODO The point of this is to give us a collection object we can create
 // methods from like
 
-func (windows Windows) Window(id string) *Window {
-	for _, window := range windows {
-		if window.ID == id {
-			return window
-		}
-	}
-	return nil
-}
+//func (windows Windows) Window(id string) *Window {
+//	for _, window := range windows {
+//		if window.ID == id {
+//			return window
+//		}
+//	}
+//	return nil
+//}
 
 // TODO: Maybe desktop, always on top, always on desktop, etc, definitely
 // should include order, and desktop, and other facts.

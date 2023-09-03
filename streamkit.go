@@ -63,7 +63,12 @@ func New() (toolkit *Toolkit) {
 	fmt.Printf("toolkit.XWayland: %v\n", toolkit.XWayland)
 	fmt.Printf("toolkit.XWayland.Client %v\n", toolkit.XWayland.Client)
 
-	cachedWindow := toolkit.XWayland.ActiveWindow()
+	// TOOD: MUST BE fucking go.mod or whatever because because I changed the
+	// fucking name and its still claiming to be looking for ActiveWindow() or
+	// ActiveWindow Attribute
+
+	// And not GetActiveWindow
+	cachedWindow := toolkit.XWayland.Window()
 	fmt.Printf("XWayland CachedActiveWindow(): %v\n", cachedWindow)
 
 	//cachedWindow := toolkit.(*X11).ActiveWindow()
