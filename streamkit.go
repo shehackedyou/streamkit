@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	ewmh "github.com/linuxdeepin/go-x11-client/util/wm/ewmh"
 	broadcast "github.com/shehackedyou/streamkit/broadcast"
 	obs "github.com/shehackedyou/streamkit/broadcast/obs"
 	show "github.com/shehackedyou/streamkit/broadcast/show"
@@ -42,6 +41,7 @@ func New() (toolkit *Toolkit) {
 
 	fmt.Printf("attempting to connect to obs wsAPI\n")
 
+	// TODO: Add wayland support so we can avoid xwayland when we want
 	//wayland.WaylandTest()
 
 	//display, err := wayland.Connect("10.100.100.1")
@@ -50,12 +50,6 @@ func New() (toolkit *Toolkit) {
 	//}
 	//fmt.Printf("display: %v\n", display)
 
-	fmt.Printf("before toolkit = &Toolkit\n")
-
-	//fmt.Printf("xserver.Client: %v\n", toolkit.X11.Client)
-
-	fmt.Printf("trying ConnectToX11\n")
-
 	toolkit = &Toolkit{
 		Config: toolkitConfig,
 		Show: &broadcast.Show{
@@ -63,8 +57,6 @@ func New() (toolkit *Toolkit) {
 		},
 		OBS: &obs.Client{
 			WS: obs.Connect(toolkitConfig["obs_host"]),
-			//Mode: this is studio vs direct stream which is USELESS
-			// ui concept only really
 		},
 		XWayland: &xserver.X11{
 			Client: xserver.Connect(toolkitConfig["xserver_host"]),
@@ -72,7 +64,9 @@ func New() (toolkit *Toolkit) {
 		Delay: 1500 * time.Millisecond,
 	}
 
-	//toolkit.X11.CacheActiveWindow()
+	//window := toolkit.XWayland.CacheActiveWindow()
+
+	//fmt.Printf("XWayland CachedActiveWindow(): %v\n", window)
 
 	fmt.Printf("X11: %v\n", toolkit.XWayland)
 
@@ -82,16 +76,10 @@ func New() (toolkit *Toolkit) {
 
 	fmt.Printf("X11 active window Title %v\n", toolkit.XWayland.Client)
 
-	fmt.Printf("X11 Window %v\n", toolkit.XWayland.CurrentWindow())
+	activeWindow := toolkit.XWayland.ActiveWindow()
 
-	activeWindow, err := ewmh.GetActiveWindow(toolkit.XWayland.Client).Reply(toolkit.XWayland.Client)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("active_window: %v\n", activeWindow)
-
-	//fmt.Printf("X11 active window PID %v\n", toolkit.X11.ActiveWindow().PID)
+	// TODO: This is turning out nil
+	fmt.Printf("X11 activeWindow %v\n", activeWindow)
 
 	//toolkit.parseScenes()
 

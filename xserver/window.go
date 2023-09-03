@@ -2,6 +2,7 @@ package xserver
 
 import (
 	"strings"
+	"time"
 
 	x11 "github.com/linuxdeepin/go-x11-client"
 )
@@ -36,6 +37,18 @@ import (
 
 type Windows []*Window
 
+// TODO The point of this is to give us a collection object we can create
+// methods from like
+
+func (windows Windows) Window(id string) *Window {
+	for _, window := range windows {
+		if window.ID == id {
+			return window
+		}
+	}
+	return nil
+}
+
 // TODO: Maybe desktop, always on top, always on desktop, etc, definitely
 // should include order, and desktop, and other facts.
 // We will absolutely need a way to run Javascript on the browser window page so
@@ -63,6 +76,7 @@ type Rectangle struct {
 type Window struct {
 	ID      string // TODO: Maybe store innerID and see if its something we can use
 	Title   string
+	Command string
 	PID     uint32
 	Type    WindowType
 	Focused bool       // aka Active
@@ -71,6 +85,8 @@ type Window struct {
 	// then be able to do like .XWindow() => x11.Window type
 	// There is also tons of window info data that may just be better to save
 	// in the form x11.WindowInfo, and that stores X11.Window inside it
+
+	LastUpdatedAt time.Time
 
 	Rectangle
 }

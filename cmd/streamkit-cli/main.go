@@ -33,7 +33,7 @@ func main() {
 		},
 	})
 
-	fmt.Printf("toolkit:%v", toolkit)
+	fmt.Printf("toolkit:%v\n\n", toolkit)
 
 	if len(initErrors) == 0 {
 		cmd.Parse(os.Args).Execute()
