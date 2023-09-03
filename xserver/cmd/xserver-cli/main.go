@@ -11,7 +11,7 @@ import (
 
 type Application struct {
 	Name  string
-	X     *xserver.X11
+	X11   *xserver.X11
 	Delay time.Duration
 	Paths map[PathType]Path
 }
@@ -43,7 +43,7 @@ func main() {
 	x11App := Application{
 		Name: "xserver-cli",
 		X11: &xserver.X11{
-			Client: xserver.ConnectToX11("localhost:10"),
+			Client: xserver.ConnectTo("localhost:10"),
 		},
 		Delay: 2 * time.Second,
 	}
