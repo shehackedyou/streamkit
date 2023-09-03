@@ -3,8 +3,6 @@ package xserver
 import (
 	"strings"
 	"time"
-
-	x11 "github.com/linuxdeepin/go-x11-client"
 )
 
 //var skipTaskBarWindowTypes = []string{
@@ -79,8 +77,8 @@ type Window struct {
 	Command string
 	PID     uint32
 	Type    WindowType
-	Focused bool       // aka Active
-	X11     x11.Window // The base Window object from our library
+	Focused bool // aka Active
+	//X11     x11.Window // The base Window object from our library
 	// eventually we should just load all this data into our window object and
 	// then be able to do like .XWindow() => x11.Window type
 	// There is also tons of window info data that may just be better to save

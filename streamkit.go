@@ -27,8 +27,6 @@ type Toolkit struct {
 // should assumingly always be 127.0.0.1 whereas obs reasonably could be
 // different
 func New() (toolkit *Toolkit) {
-	fmt.Printf("start of New()\n")
-
 	// TODO: Show should be from config, and obs and x11 information. Logically
 	// stored in ~/.config/$APP_NAME and the local data should be
 	// ~/.local/share/$APP_NAME
@@ -39,8 +37,6 @@ func New() (toolkit *Toolkit) {
 		"xserver_host": "localhost:10",
 	}
 
-	fmt.Printf("attempting to connect to obs wsAPI\n")
-
 	// TODO: Add wayland support so we can avoid xwayland when we want
 	//wayland.WaylandTest()
 
@@ -48,7 +44,6 @@ func New() (toolkit *Toolkit) {
 	//if err != nil {
 	//	fmt.Printf("err: %v\n", err)
 	//}
-	//fmt.Printf("display: %v\n", display)
 
 	toolkit = &Toolkit{
 		Config: toolkitConfig,
@@ -59,27 +54,25 @@ func New() (toolkit *Toolkit) {
 			WS: obs.Connect(toolkitConfig["obs_host"]),
 		},
 		XWayland: &xserver.X11{
-			Client: xserver.Connect(toolkitConfig["xserver_host"]),
+			Client: xserver.Connect("localhost:10"),
 		},
 		Delay: 1500 * time.Millisecond,
 	}
 
-	//window := toolkit.XWayland.CacheActiveWindow()
+	fmt.Printf("toolkit: %v\n", toolkit)
+	fmt.Printf("toolkit.XWayland: %v\n", toolkit.XWayland)
+	fmt.Printf("toolkit.XWayland.Client %v\n", toolkit.XWayland.Client)
 
-	//fmt.Printf("XWayland CachedActiveWindow(): %v\n", window)
+	cachedWindow := toolkit.XWayland.ActiveWindow()
+	fmt.Printf("XWayland CachedActiveWindow(): %v\n", cachedWindow)
 
-	fmt.Printf("X11: %v\n", toolkit.XWayland)
+	//cachedWindow := toolkit.(*X11).ActiveWindow()
+	//cachedWindow := xserver.(*X11).ActiveWindow()
 
-	fmt.Printf("X11.Client %v\n", toolkit.XWayland.Client)
-
-	fmt.Printf("X11 active window Title %v\n", toolkit.XWayland)
-
-	fmt.Printf("X11 active window Title %v\n", toolkit.XWayland.Client)
-
-	activeWindow := toolkit.XWayland.ActiveWindow()
+	//activeWindow := toolkit.XWayland.ActiveWindow()
 
 	// TODO: This is turning out nil
-	fmt.Printf("X11 activeWindow %v\n", activeWindow)
+	//fmt.Printf("X11 activeWindow %v\n", activeWindow)
 
 	//toolkit.parseScenes()
 
