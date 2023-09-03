@@ -14,9 +14,9 @@ import (
 
 type Toolkit struct {
 	// NOTE: Short-poll rate [we will rewrite without short polling after]
-	Delay time.Duration
-	OBS   *obs.Client
-	X11   *xserver.X11
+	Delay    time.Duration
+	OBS      *obs.Client
+	XWayland *xserver.XWayland
 	// TODO: Our local copy of the show is entirely separate from obs.Client so we
 	// can change that out while maintaining logic and a data object
 	Show   *broadcast.Show
@@ -28,6 +28,7 @@ type Toolkit struct {
 // should assumingly always be 127.0.0.1 whereas obs reasonably could be
 // different
 func New() (toolkit *Toolkit) {
+
 	fmt.Printf("start of New()\n")
 
 	// TODO: Show should be from config, and obs and x11 information. Logically
@@ -65,25 +66,26 @@ func New() (toolkit *Toolkit) {
 			//Mode: this is studio vs direct stream which is USELESS
 			// ui concept only really
 		},
-		x11: &xserver.X11{
+		XWayland: &xserver.XWayland{
 			Client: xserver.ConnectToX11("localhost:10"),
 		},
 		Delay: 1500 * time.Millisecond,
 	}
 
+	toolkit.XWayland.TestFunc()
 	//toolkit.X11.CacheActiveWindow()
 
-	fmt.Printf("X11: %v\n", toolkit.X11)
+	fmt.Printf("X11: %v\n", toolkit.XWayland)
 
-	fmt.Printf("X11.Client %v\n", toolkit.X11.Client)
+	fmt.Printf("X11.Client %v\n", toolkit.XWayland.Client)
 
-	fmt.Printf("X11 active window Title %v\n", toolkit.X11)
+	fmt.Printf("X11 active window Title %v\n", toolkit.XWayland)
 
-	fmt.Printf("X11 active window Title %v\n", toolkit.X11.Client)
+	fmt.Printf("X11 active window Title %v\n", toolkit.XWayland.Client)
 
-	//fmt.Printf("X11 Window %v\n", toolkit.X11.CurrentWindow())
+	fmt.Printf("X11 Window %v\n", toolkit.XWayland.CurrentWindow())
 
-	activeWindow, err := ewmh.GetActiveWindow(toolkit.X11.Client).Reply(toolkit.X11.Client)
+	activeWindow, err := ewmh.GetActiveWindow(toolkit.XWayland.Client).Reply(toolkit.XWayland.Client)
 	if err != nil {
 		panic(err)
 	}

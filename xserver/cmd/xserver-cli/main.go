@@ -11,7 +11,7 @@ import (
 
 type Application struct {
 	Name  string
-	X11   *xserver.XServer
+	X     *xserver.X11
 	Delay time.Duration
 	Paths map[PathType]Path
 }
@@ -42,7 +42,7 @@ func main() {
 
 	x11App := Application{
 		Name: "xserver-cli",
-		X11: &xserver.XServer{
+		X11: &xserver.X11{
 			Client: xserver.ConnectToX11("localhost:10"),
 		},
 		Delay: 2 * time.Second,
@@ -77,14 +77,13 @@ func main() {
 	//			fmt.Printf("  active_window_title: %s\n", activeWindow.Title)
 
 	//			fmt.Printf("  x11.ActiveWindowTitle: %v\n", x11App.X11.ActiveWindowTitle)
-
 	//			// NOTE: This worked to prevent it from repeating
 	//			// HasActiveWindowChanged() over and over
 	//			x11App.X11.CacheActiveWindow()
 
 	//		} else {
 	//			fmt.Printf("tick,...\n")
-	//			fmt.Printf("  x11.ActiveWindowTitle: %v\n", x11App.X11.ActiveWindowTitle)
+	//			fmt.Printf("  toolkit.X11.ActiveWindowTitle: %v\n", x11App.X11.ActiveWindowTitle)
 	//			fmt.Printf(
 	//				"  x11.ActiveWindow().Type.String(): %v\n",
 	//				x11App.X11.ActiveWindow().Type.String(),
@@ -96,7 +95,6 @@ func main() {
 }
 
 ///	cli "github.com/multiverse-os/cli"
-///)
 ///
 ///func main() {
 ///	fmt.Println("streamkit-cli")
@@ -112,7 +110,7 @@ func main() {
 ///		Version:     cli.Version{Major: 0, Minor: 1, Patch: 0},
 ///		Commands: cli.Commands(
 ///			cli.Command{
-///				Name:        "obs",
+///				Name:        "obs
 ///				Alias:       "o",
 ///				Description: "show and item in the list",
 ///				Subcommands: cli.Commands(
@@ -128,7 +126,7 @@ func main() {
 ///
 ///									// TODO NEED TO FIX THIS
 ///									//toolkit.Show.PrintDebug()
-///									//toolkit.Show.Cache()
+///									//toolkit.Show.Cache
 ///									// TODO: So initialize Show and obs.Client in the NewToolkit
 ///									// then cache it there too
 ///

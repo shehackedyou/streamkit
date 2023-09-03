@@ -29,8 +29,8 @@ github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d/go.mod h1:YUTz3bUH
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/shehackedyou/streamkit/broadcast v0.0.0-20230831104534-55c0b85adeac h1:RXAOoaBtUaqlTl8qr6VAF8RgUaUctqrMnsDPXDTJ5+U=
 github.com/shehackedyou/streamkit/broadcast v0.0.0-20230831104534-55c0b85adeac/go.mod h1:o3oZ7Pcme3fVQx6lfEduO8zwfgFrd0q1rFGq/PnljWA=
-github.com/shehackedyou/streamkit/xserver v0.0.0-20230831154116-07bc071bac28 h1:A7kSZxT5iH8noLqQZK3OdIjgYae+SHIVzn1RtWPtnUI=
-github.com/shehackedyou/streamkit/xserver v0.0.0-20230831154116-07bc071bac28/go.mod h1:9p2lDu0Z62V5dXfaH6nsF0h+52YAsSgLOEr1Gmk/VJM=
+github.com/shehackedyou/streamkit/xserver v0.0.0-20230831174115-1359eae3ded3 h1:8vraiO6PFcWDGZonEGbwzO5l2mOERN6je3sKZyZK7Nc=
+github.com/shehackedyou/streamkit/xserver v0.0.0-20230831174115-1359eae3ded3/go.mod h1:9p2lDu0Z62V5dXfaH6nsF0h+52YAsSgLOEr1Gmk/VJM=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 golang.org/x/sys v0.8.0 h1:EBmGv8NaZBZTWvrbjNoL6HVt+IVy3QDQpJs7VRIw3tU=
 golang.org/x/sys v0.8.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=

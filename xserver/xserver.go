@@ -27,7 +27,7 @@ type X11 struct {
 	CurrentWindowChangedAt time.Time
 }
 
-func ConnectToX11(addr string) *x11.Conn {
+func ConnectTo(addr string) *x11.Conn {
 	conn, err := x11.NewConnDisplay(addr)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
@@ -37,11 +37,11 @@ func ConnectToX11(addr string) *x11.Conn {
 	return conn
 }
 
-//func (x *X11) HasActiveWindowChanged() bool {
+//func (x *) HasActiveWindowChanged() bool {
 //	return x.ActiveWindowTitle != x.ActiveWindow().Title
 //}
 
-func (x X11) CurrentWindow() *Window {
+func (x *X11) CurrentWindow() *Window {
 	//	var err error
 	//	// TODO: This returns an x.Window object which can get all sorts of
 	//	// information beyond just the name, like the PID. We shouldn't need a second
@@ -74,13 +74,12 @@ func (x X11) CurrentWindow() *Window {
 	//}
 
 	// TODO: Maybe have a cache window data or some such func
-	cachedWindow := &Window{
-		Title: "test",
-		//Title: activeWindowTitle,
-		PID: "test",
-	}
+	//cachedWindow := &Window{
+	//	//PID: uint32(4444),
+	//}
 
-	return cachedWindow
+	//return cachedWindow
+	return nil
 }
 
 //func (x *X11) InitActiveWindow() *Window {
