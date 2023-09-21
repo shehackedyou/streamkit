@@ -48,7 +48,12 @@ func Connect(addr string) *x11.Conn {
 //	return x.Window.Title != x.ActiveWindow().Title
 //}
 
-func (x *X11) CacheWindow() {
+func (x *X11) CacheWindow() string {
+	fmt.Printf("test \n")
+	return "test"
+}
+
+func (x *X11) ActiveWindow() {
 	activeWindow, err := ewmh.GetActiveWindow(x.Client).Reply(x.Client)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
