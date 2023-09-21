@@ -2,6 +2,15 @@ package xserver
 
 // TODO: Some useful
 
+// TODO: Maybe desktop, always on top, always on desktop, etc, definitely
+// should include order, and desktop, and other facts.
+// We will absolutely need a way to run Javascript on the browser window page so
+// we can set it to 160p preferably or eventually randomize to 160p to 320
+
+//type Desktops []*Desktop
+//
+//type Desktop Windows
+
 // func GetNumberOfDesktop(c *x.Conn) GetCardinalCookie
 // func SetNumberOfDesktop(c *x.Conn, val uint32)
 

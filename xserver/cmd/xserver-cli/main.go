@@ -10,9 +10,8 @@ import (
 )
 
 func main() {
-
 	x11 := xserver.X11{
-		Client: xserver.Connect(xserver.DefaultConfig()["xserver_host"]),
+		Client: xserver.Connect(xserver.DefaultConfig()["host"]),
 	}
 
 	cmd, initErrors := cli.New(cli.App{
@@ -41,37 +40,4 @@ func main() {
 	if len(initErrors) == 0 {
 		cmd.Parse(os.Args).Execute()
 	}
-
-	//x11App.X11.InitActiveWindow()
-
-	// TODO: Probably want to load some settings from a YAML config to make things
-	// easier
-
-	//fmt.Printf("x11App:\n")
-
-	//tick := time.Tick(x11App.Delay)
-	//for {
-	//	select {
-	//	case <-tick:
-	//		if x11App.X11.HasActiveWindowChanged() {
-	//			fmt.Printf("HasActiveWindowChanged(): true\n")
-
-	//			activeWindow := x11App.X11.ActiveWindow()
-	//			fmt.Printf("  active_window_title: %s\n", activeWindow.Title)
-
-	//			fmt.Printf("  x11.ActiveWindowTitle: %v\n", x11App.X11.ActiveWindowTitle)
-	//			// NOTE: This worked to prevent it from repeating
-	//			// HasActiveWindowChanged() over and over
-	//			x11App.X11.CacheActiveWindow()
-
-	//		} else {
-	//			fmt.Printf("tick,...\n")
-	//			fmt.Printf("  toolkit.X11.ActiveWindowTitle: %v\n", x11App.X11.ActiveWindowTitle)
-	//			fmt.Printf(
-	//				"  x11.ActiveWindow().Type.String(): %v\n",
-	//				x11App.X11.ActiveWindow().Type.String(),
-	//			)
-	//		}
-	//	}
-	//}
 }

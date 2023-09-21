@@ -13,25 +13,25 @@ type X11 struct {
 	Client *x11.Conn
 	//Desktops
 
-	// TODO: Or save the position in the slice (or linked list that is the active one, or even use linked list to put them in stack order and top is active.
-	//Windows *Windows
-
+	// TODO: This either needs to go entirely, and we save the Active or focused
+	// window; storing a window like this is almost not sensible; but if we do it
+	// has to be a pointer and MUST be a pointer to the exact same object in the
+	// Windows []*Window otherwise its far less useful (this is do-able but takes
+	// a bit more finesse)
 	Window *Window
 
+	// TODO: THis is the old way of avoiding unneeded updates but we can get
+	// around this by properly subscribing and there are other methods; but for
+	// now we can just keep doing these silly things for examples
 	CurrentWindowTitle     string
 	CurrentWindowChangedAt time.Time
+
+	Windows
 }
 
 func DefaultConfig() map[string]string {
-	//userHome, _ := os.UserHomeDir()
-
-	//x11App.Paths = map[PathType]Path{
-	//	Config: Path(fmt.Sprintf("%v/.config/%v", userHome, x11App.Name)),
-	//	Data:   Path(fmt.Sprintf("%v/.local/share/%v", userHome, x11App.Name)),
-	//}
-
 	return map[string]string{
-		"xserver_host": "localhost:10.0",
+		"host": "localhost:10.0",
 	}
 }
 
@@ -92,4 +92,40 @@ func (x *X11) ActiveWindow() *Window {
 //func (x *X11) CacheActiveWindow() *Window {
 //	x.Window = x.ActiveWindow()
 //	return x.Window
+//}
+
+// LOL SHORT POLLING AGAINST AN API WITH SUBSCRIPTIONS
+//func ShortPoll() {
+//x11App.X11.InitActiveWindow()
+
+// TODO: Probably want to load some settings from a YAML config to make things
+// easier
+
+//fmt.Printf("x11App:\n")
+
+//tick := time.Tick(x11App.Delay)
+//for {
+//	select {
+//	case <-tick:
+//		if x11App.X11.HasActiveWindowChanged() {
+//			fmt.Printf("HasActiveWindowChanged(): true\n")
+
+//			activeWindow := x11App.X11.ActiveWindow()
+//			fmt.Printf("  active_window_title: %s\n", activeWindow.Title)
+
+//			fmt.Printf("  x11.ActiveWindowTitle: %v\n", x11App.X11.ActiveWindowTitle)
+//			// NOTE: This worked to prevent it from repeating
+//			// HasActiveWindowChanged() over and over
+//			x11App.X11.CacheActiveWindow()
+
+//		} else {
+//			fmt.Printf("tick,...\n")
+//			fmt.Printf("  toolkit.X11.ActiveWindowTitle: %v\n", x11App.X11.ActiveWindowTitle)
+//			fmt.Printf(
+//				"  x11.ActiveWindow().Type.String(): %v\n",
+//				x11App.X11.ActiveWindow().Type.String(),
+//			)
+//		}
+//	}
+//}
 //}

@@ -29,11 +29,11 @@ import (
 
 // This gets a list of windows (aka ClientList)
 
-//type Desktops []*Desktop
-//
-//type Desktop Windows
-
 type Windows []*Window
+
+// TODO: We need to switch to developing around Windows as a collection too
+// which will make the xserver client more sensible; be able to easily pull
+// specific windows, have a .Focus()
 
 // TODO The point of this is to give us a collection object we can create
 // methods from like
@@ -47,11 +47,6 @@ type Windows []*Window
 //	return nil
 //}
 
-// TODO: Maybe desktop, always on top, always on desktop, etc, definitely
-// should include order, and desktop, and other facts.
-// We will absolutely need a way to run Javascript on the browser window page so
-// we can set it to 160p preferably or eventually randomize to 160p to 320
-
 // TODO: We could hash the title with the PID to get a more unique identifier to
 // check with so we avoid the windows with the same title being the same. (Why
 // are these not uint?)
@@ -61,6 +56,9 @@ type Position struct {
 }
 
 // lol didnt use point
+// TODO: This will need layer number, not just is in focus but guess that makes
+// more sense within window than rectangle even though its the rectangle itself
+// that is layered on the desktop.
 type Rectangle struct {
 	X, Y          int16
 	Width, Height uint16
