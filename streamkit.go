@@ -7,7 +7,6 @@ import (
 	broadcast "github.com/shehackedyou/streamkit/broadcast"
 	obs "github.com/shehackedyou/streamkit/broadcast/obs"
 	show "github.com/shehackedyou/streamkit/broadcast/show"
-
 	xserver "github.com/shehackedyou/streamkit/xserver"
 )
 
@@ -79,9 +78,9 @@ func New() (toolkit *Toolkit) {
 	// ActiveWindow Attribute
 
 	// And not GetActiveWindow
-	//cacheWindow := toolkit.XWayland.CacheWindow()
-	toolkit.XWayland.CacheWindow()
-	//fmt.Printf("XWayland CacheWindow(): %v\n", cacheWindow)
+	cacheWindow := toolkit.XWayland.CacheWindow()
+	//toolkit.XWayland.CacheWindow()
+	fmt.Printf("XWayland CacheWindow(): %v\n", cacheWindow)
 
 	//cachedWindow := toolkit.(*X11).ActiveWindow()
 	//cachedWindow := xserver.(*X11).ActiveWindow()
