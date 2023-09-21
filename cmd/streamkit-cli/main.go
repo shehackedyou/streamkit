@@ -9,6 +9,11 @@ import (
 	cli "github.com/multiverse-os/cli"
 )
 
+//list, _ := client.Inputs.GetInputList()
+//import typedefs "github.com/andreykaipov/goobs/api/typedefs"
+//// Represents the request body for the GetSceneItemList request.
+//type GetSceneItemListParams struct {
+
 func main() {
 	toolkit := streamkit.New()
 
@@ -39,10 +44,3 @@ func main() {
 		cmd.Parse(os.Args).Execute()
 	}
 }
-
-//list, _ := client.Inputs.GetInputList()
-
-//import typedefs "github.com/andreykaipov/goobs/api/typedefs"
-//
-//// Represents the request body for the GetSceneItemList request.
-//type GetSceneItemListParams struct {

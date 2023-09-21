@@ -78,9 +78,8 @@ func New() (toolkit *Toolkit) {
 	// ActiveWindow Attribute
 
 	// And not GetActiveWindow
-	cacheWindow := toolkit.XWayland.CacheWindow()
-	//toolkit.XWayland.CacheWindow()
-	fmt.Printf("XWayland CacheWindow(): %v\n", cacheWindow)
+	activeWindow := toolkit.XWayland.ActiveWindow()
+	fmt.Printf("XWayland ActiveWindow(): %v\n", activeWindow)
 
 	//cachedWindow := toolkit.(*X11).ActiveWindow()
 	//cachedWindow := xserver.(*X11).ActiveWindow()

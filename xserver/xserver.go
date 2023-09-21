@@ -2,6 +2,7 @@ package xserver
 
 import (
 	"fmt"
+	"io/ioutil"
 	"time"
 
 	x11 "github.com/linuxdeepin/go-x11-client"
@@ -46,12 +47,7 @@ func Connect(address string) *x11.Conn {
 //	return x.Window.Title != x.ActiveWindow().Title
 //}
 
-func (x *X11) CacheWindow() string {
-	fmt.Printf("test \n")
-	return "test"
-}
-
-func (x *X11) ActiveWindow() {
+func (x *X11) ActiveWindow() *Window {
 	activeWindow, err := ewmh.GetActiveWindow(x.Client).Reply(x.Client)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
@@ -59,32 +55,31 @@ func (x *X11) ActiveWindow() {
 
 	fmt.Printf("activeWindow: %v\n", activeWindow)
 
-	//activeWindowTitle, err := ewmh.GetWMName(
-	//	x.Client,
-	//	activeWindow,
-	//).Reply(x.Client)
-	//if err != nil {
-	//	fmt.Printf("error(%v)\n", err)
-	//}
+	activeWindowTitle, err := ewmh.GetWMName(
+		x.Client,
+		activeWindow,
+	).Reply(x.Client)
+	if err != nil {
+		fmt.Printf("error(%v)\n", err)
+	}
 
-	//fmt.Printf("ActiveWindowTitle: %v\n", activeWindowTitle)
+	fmt.Printf("ActiveWindowTitle: %v\n", activeWindowTitle)
 
-	//pid, err := ewmh.GetWMPid(x.Client, activeWindow).Reply(x.Client)
-	//if err != nil {
-	//	fmt.Printf("error(%v)\n", err)
-	//} else {
-	//	fmt.Printf("\tPid:%v\n", pid)
-	//	data, _ := ioutil.ReadFile(fmt.Sprintf("/proc/%d/cmdline", pid))
-	//	fmt.Printf("\t\tCmdline: %s\n", data)
-	//}
+	pid, err := ewmh.GetWMPid(x.Client, activeWindow).Reply(x.Client)
+	if err != nil {
+		fmt.Printf("error(%v)\n", err)
+	} else {
+		fmt.Printf("\tPid:%v\n", pid)
+		data, _ := ioutil.ReadFile(fmt.Sprintf("/proc/%d/cmdline", pid))
+		fmt.Printf("\t\tCmdline: %s\n", data)
+	}
 
-	//// TODO: Maybe have a cache window data or some such func
-	//return &Window{
-	//	Title:         activeWindowTitle,
-	//	PID:           pid,
-	//	LastUpdatedAt: time.Now(),
-	//}
-	//return nil
+	// TODO: Maybe have a cache window data or some such func
+	return &Window{
+		Title:         activeWindowTitle,
+		PID:           pid,
+		LastUpdatedAt: time.Now(),
+	}
 }
 
 //func (x *X11) InitActiveWindow() *Window {
