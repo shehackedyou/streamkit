@@ -22,20 +22,31 @@ type Toolkit struct {
 	Config map[string]string
 }
 
+func DefaultConfig() map[string]string {
+	return map[string]string{
+		"name":         "she hacked you",
+		"obs_host":     "10.100.100.1:4444",
+		"xserver_host": ":0",
+	}
+}
+
 // TODO: Could pass the host for OBS and the host for X11 as variadic strings so
 // it can be empty, or provide position 1 for obs position 2 for x11 (though x11
 // should assumingly always be 127.0.0.1 whereas obs reasonably could be
 // different
+
+// TODO: Obvio we need to be passing in the fucking config not just have it be
+// hardcoded like shitty law
 func New() (toolkit *Toolkit) {
 	// TODO: Show should be from config, and obs and x11 information. Logically
 	// stored in ~/.config/$APP_NAME and the local data should be
 	// ~/.local/share/$APP_NAME
 
-	toolkitConfig := map[string]string{
-		"name":         "she hacked you",
-		"obs_host":     "10.100.100.1:4444",
-		"xserver_host": "localhost:10",
-	}
+	// TODO: This would be defined the CLI and passed in or at the VERY least this
+	// would be set to a function that returns this as DefaultConfig(); use
+	// variadic input and when that variadic input is empty then we resort to
+	// using this
+	toolkitConfig := DefaultConfig()
 
 	// TODO: Add wayland support so we can avoid xwayland when we want
 	//wayland.WaylandTest()
@@ -54,7 +65,7 @@ func New() (toolkit *Toolkit) {
 			WS: obs.Connect(toolkitConfig["obs_host"]),
 		},
 		XWayland: &xserver.X11{
-			Client: xserver.Connect("localhost:10"),
+			Client: xserver.Connect(toolkitConfig["xserver_host"]),
 		},
 		Delay: 1500 * time.Millisecond,
 	}
@@ -68,8 +79,8 @@ func New() (toolkit *Toolkit) {
 	// ActiveWindow Attribute
 
 	// And not GetActiveWindow
-	cachedWindow := toolkit.XWayland.Window()
-	fmt.Printf("XWayland CachedActiveWindow(): %v\n", cachedWindow)
+	cacheWindow := toolkit.XWayland.CacheWindow()
+	fmt.Printf("XWayland CacheWindow(): %v\n", cacheWindow)
 
 	//cachedWindow := toolkit.(*X11).ActiveWindow()
 	//cachedWindow := xserver.(*X11).ActiveWindow()
