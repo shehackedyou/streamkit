@@ -9,17 +9,12 @@ import (
 	cli "github.com/multiverse-os/cli"
 )
 
-//list, _ := client.Inputs.GetInputList()
-//import typedefs "github.com/andreykaipov/goobs/api/typedefs"
-//// Represents the request body for the GetSceneItemList request.
-//type GetSceneItemListParams struct {
-
 func main() {
 	toolkit := streamkit.New()
 
 	cmd, initErrors := cli.New(cli.App{
 		Name:        "streamkit-cli",
-		Description: "Streamkit command-line interface for interacting with toolkit",
+		Description: "streamkit command-line interface for interacting with toolkit",
 		Version:     cli.Version{Major: 0, Minor: 1, Patch: 0},
 		Actions: cli.Actions{
 			OnStart: func(c *cli.Context) error {

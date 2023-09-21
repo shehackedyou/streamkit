@@ -10,6 +10,11 @@ import (
 	xserver "github.com/shehackedyou/streamkit/xserver"
 )
 
+//list, _ := client.Inputs.GetInputList()
+//import typedefs "github.com/andreykaipov/goobs/api/typedefs"
+//// Represents the request body for the GetSceneItemList request.
+//type GetSceneItemListParams struct {
+
 type Toolkit struct {
 	// NOTE: Short-poll rate [we will rewrite without short polling after]
 	Delay    time.Duration
@@ -22,6 +27,13 @@ type Toolkit struct {
 }
 
 func DefaultConfig() map[string]string {
+	//userHome, _ := os.UserHomeDir()
+
+	//x11App.Paths = map[PathType]Path{
+	//	Config: Path(fmt.Sprintf("%v/.config/%v", userHome, x11App.Name)),
+	//	Data:   Path(fmt.Sprintf("%v/.local/share/%v", userHome, x11App.Name)),
+	//}
+
 	return map[string]string{
 		"name":         "she hacked you",
 		"obs_host":     "10.100.100.1:4444",
