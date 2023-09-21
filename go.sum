@@ -1,5 +1,5 @@
-github.com/andreykaipov/goobs v0.12.0 h1:EsV3QzqWO+FsrLFbzzKsZuHsdFAGp7F0nG9OiDWdaVs=
-github.com/andreykaipov/goobs v0.12.0/go.mod h1:EqG73Uu/4npyhXIWWszgRelNkEeIz+d0slUT6NKWYs4=
+github.com/andreykaipov/goobs v0.12.1 h1:KfVHfuvGFHg1MDi1muaKCwRxek3O4tzKcqBZmLDF8EA=
+github.com/andreykaipov/goobs v0.12.1/go.mod h1:9lCSWI7uZScJx05Hc0KnRtIItGjU8VpGV5dhONiiUgg=
 github.com/buger/jsonparser v1.1.1 h1:2PnMjfWD7wBILjqQbt530v576A/cAbQvEW9gGIpYMUs=
 github.com/buger/jsonparser v1.1.1/go.mod h1:6RYKKt7H4d4+iWqouImQ9R2FZql3VbhNgx27UK13J/0=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
@@ -28,8 +28,8 @@ github.com/multiverse-os/loading v0.0.0-20230205140225-67dcaf84ca47/go.mod h1:MH
 github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d h1:VhgPp6v9qf9Agr/56bj7Y/xa04UccTW04VP0Qed4vnQ=
 github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d/go.mod h1:YUTz3bUH2ZwIWBy3CJBeOBEugqcmXREj14T+iG/4k4U=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
-github.com/shehackedyou/streamkit/xserver v0.0.0-20230903092537-bea8fa5d9139 h1:Wscah4tJ635hSDbUAIXHkByv9QZjKEnXXCByZEODIaE=
-github.com/shehackedyou/streamkit/xserver v0.0.0-20230903092537-bea8fa5d9139/go.mod h1:9p2lDu0Z62V5dXfaH6nsF0h+52YAsSgLOEr1Gmk/VJM=
+github.com/shehackedyou/streamkit/xserver v0.0.0-20230921094734-94ea02c5ebdb h1:NvfKi3+hZkxxR/QlQynhkCqnaTszfHfVMzZRlK6Nv7E=
+github.com/shehackedyou/streamkit/xserver v0.0.0-20230921094734-94ea02c5ebdb/go.mod h1:lTJIAr3Lh7SRqdfDx0pFlk8W0xo2+0AyLQo96DpydVM=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 golang.org/x/sys v0.8.0 h1:EBmGv8NaZBZTWvrbjNoL6HVt+IVy3QDQpJs7VRIw3tU=
 golang.org/x/sys v0.8.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=

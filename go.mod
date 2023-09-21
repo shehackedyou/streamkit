@@ -11,8 +11,8 @@ require (
 )
 
 require (
-	github.com/andreykaipov/goobs v0.12.0
-	github.com/shehackedyou/streamkit/xserver v0.0.0-20230903092537-bea8fa5d9139
+	github.com/andreykaipov/goobs v0.12.1
+	github.com/shehackedyou/streamkit/xserver v0.0.0-20230921094734-94ea02c5ebdb
 )
 
 require (

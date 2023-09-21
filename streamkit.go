@@ -26,7 +26,7 @@ func DefaultConfig() map[string]string {
 	return map[string]string{
 		"name":         "she hacked you",
 		"obs_host":     "10.100.100.1:4444",
-		"xserver_host": ":0",
+		"xserver_host": "localhost:10.0",
 	}
 }
 
@@ -79,8 +79,9 @@ func New() (toolkit *Toolkit) {
 	// ActiveWindow Attribute
 
 	// And not GetActiveWindow
-	cacheWindow := toolkit.XWayland.CacheWindow()
-	fmt.Printf("XWayland CacheWindow(): %v\n", cacheWindow)
+	//cacheWindow := toolkit.XWayland.CacheWindow()
+	toolkit.XWayland.CacheWindow()
+	//fmt.Printf("XWayland CacheWindow(): %v\n", cacheWindow)
 
 	//cachedWindow := toolkit.(*X11).ActiveWindow()
 	//cachedWindow := xserver.(*X11).ActiveWindow()
