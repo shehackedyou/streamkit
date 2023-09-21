@@ -34,14 +34,12 @@ func DefaultConfig() map[string]string {
 	}
 }
 
-func Connect(addr string) *x11.Conn {
-	conn, err := x11.NewConnDisplay(addr)
+func Connect(address string) *x11.Conn {
+	client, err := x11.NewConnDisplay(address)
 	if err != nil {
-		fmt.Printf("error: %v\n", err)
+		panic(err)
 	}
-	fmt.Printf("*x11.conn: %v\n", conn)
-
-	return conn
+	return client
 }
 
 //func (x *X11) HasActiveWindowChanged() bool {
