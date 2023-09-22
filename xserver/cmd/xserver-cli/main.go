@@ -24,11 +24,11 @@ func main() {
 
 				activeWindow := x11.ActiveWindow()
 
-				if xserver.IsWindowEmpty(activeWindow) {
-					fmt.Printf("the returned window is empty...\n")
-				} else {
+				//if xserver.IsWindowEmpty(activeWindow) {
+				//	fmt.Printf("the returned window is empty...\n")
+				//} else {
 					fmt.Printf("did we get active window? (%v)\n", activeWindow)
-				}
+				//}
 
 				//toolkit.HandleWindowEvents()
 				// aDD all the listening and event driven stuff
