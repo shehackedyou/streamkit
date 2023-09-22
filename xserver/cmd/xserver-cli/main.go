@@ -20,8 +20,16 @@ func main() {
 		Version:     cli.Version{Major: 0, Minor: 1, Patch: 0},
 		Actions: cli.Actions{
 			OnStart: func(c *cli.Context) error {
-
 				fmt.Printf("x11.Client: %v\n", x11.Client)
+
+				activeWindow := x11.ActiveWindow()
+
+				if xserver.IsWindowEmpty(activeWindow) {
+					fmt.Printf("the returned window is empty...\n")
+				} else {
+					fmt.Printf("did we get active window? (%v)\n", activeWindow)
+				}
+
 				//toolkit.HandleWindowEvents()
 				// aDD all the listening and event driven stuff
 				return nil

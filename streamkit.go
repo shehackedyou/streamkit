@@ -2,6 +2,7 @@ package streamkit
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	broadcast "github.com/shehackedyou/streamkit/broadcast"
@@ -15,6 +16,15 @@ import (
 //// Represents the request body for the GetSceneItemList request.
 //type GetSceneItemListParams struct {
 
+type PathType uint8
+
+const (
+	Config PathType = iota
+	Data
+)
+
+type Path string
+
 type Toolkit struct {
 	// NOTE: Short-poll rate [we will rewrite without short polling after]
 	Delay    time.Duration
@@ -24,20 +34,14 @@ type Toolkit struct {
 	// can change that out while maintaining logic and a data object
 	Show   *broadcast.Show
 	Config map[string]string
+	Paths  map[PathType]Path
 }
 
 func DefaultConfig() map[string]string {
-	//userHome, _ := os.UserHomeDir()
-
-	//x11App.Paths = map[PathType]Path{
-	//	Config: Path(fmt.Sprintf("%v/.config/%v", userHome, x11App.Name)),
-	//	Data:   Path(fmt.Sprintf("%v/.local/share/%v", userHome, x11App.Name)),
-	//}
-
 	return map[string]string{
-		"name":         "she hacked you",
-		"obs_host":     "10.100.100.1:4444",
-		"xserver_host": "localhost:10.0",
+		"name":    "she hacked you",
+		"obs":     "10.100.100.1:4444",
+		"xserver": xserver.DefaultConfig()["host"],
 	}
 }
 
@@ -59,13 +63,8 @@ func New() (toolkit *Toolkit) {
 	// using this
 	toolkitConfig := DefaultConfig()
 
-	// TODO: Add wayland support so we can avoid xwayland when we want
-	//wayland.WaylandTest()
-
-	//display, err := wayland.Connect("10.100.100.1")
-	//if err != nil {
-	//	fmt.Printf("err: %v\n", err)
-	//}
+	appName := "streamkit"
+	userHome, _ := os.UserHomeDir()
 
 	toolkit = &Toolkit{
 		Config: toolkitConfig,
@@ -73,33 +72,30 @@ func New() (toolkit *Toolkit) {
 			Scenes: make([]*show.Scene, 0),
 		},
 		OBS: &obs.Client{
-			WS: obs.Connect(toolkitConfig["obs_host"]),
+			WS: obs.Connect(toolkitConfig["obs"]),
 		},
 		XWayland: &xserver.X11{
-			Client: xserver.Connect(toolkitConfig["xserver_host"]),
+			Client: xserver.Connect(toolkitConfig["xserver"]),
 		},
 		Delay: 1500 * time.Millisecond,
+		Paths: map[PathType]Path{
+			Config: Path(fmt.Sprintf("%v/.config/%v", userHome, appName)),
+			Data:   Path(fmt.Sprintf("%v/.local/share/%v", userHome, appName)),
+		},
 	}
 
 	fmt.Printf("toolkit: %v\n", toolkit)
 	fmt.Printf("toolkit.XWayland: %v\n", toolkit.XWayland)
 	fmt.Printf("toolkit.XWayland.Client %v\n", toolkit.XWayland.Client)
 
-	// TOOD: MUST BE fucking go.mod or whatever because because I changed the
-	// fucking name and its still claiming to be looking for ActiveWindow() or
-	// ActiveWindow Attribute
-
-	// And not GetActiveWindow
 	activeWindow := toolkit.XWayland.ActiveWindow()
-	fmt.Printf("XWayland ActiveWindow(): %v\n", activeWindow)
+	fmt.Printf("activeWindow reply is (%v)\n", activeWindow)
 
-	//cachedWindow := toolkit.(*X11).ActiveWindow()
-	//cachedWindow := xserver.(*X11).ActiveWindow()
-
-	//activeWindow := toolkit.XWayland.ActiveWindow()
-
-	// TODO: This is turning out nil
-	//fmt.Printf("X11 activeWindow %v\n", activeWindow)
+	//if activeWindow.IsEmpty() {
+	//	fmt.Printf("\n\n Active Window returned empty... problems...\n")
+	//} else {
+	fmt.Printf("\n\n\nXWayland ActiveWindow(): %v\n\n\n", activeWindow)
+	//}
 
 	//toolkit.parseScenes()
 

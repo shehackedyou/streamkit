@@ -87,6 +87,15 @@ type Window struct {
 	Rectangle
 }
 
+func EmptyWindow() *Window {
+	return &Window{
+		Type: UndefinedType,
+	}
+}
+
+func (w *Window) IsEmpty() bool    { return w.Type == UndefinedType }
+func IsWindowEmpty(w *Window) bool { return w.IsEmpty() }
+
 // TODO: Can generate x11.WindowInfo from x11.Window
 //func (x *X11) ParseWindow(xwin Window) (*Window, error) {
 //	name, err := ewmh.GetWMName(x.Client, xwin).Reply(x.Client)
