@@ -32,6 +32,7 @@ type X11 struct {
 	Windows
 }
 
+// TODO: This works with ramfb butttttt..... wtf
 func (x *X11) ActiveWindow() string {
 	win, err := ewmh.GetActiveWindow(x.Client).Reply(x.Client)
 	if err != nil {
