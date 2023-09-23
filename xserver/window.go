@@ -70,63 +70,38 @@ type Rectangle struct {
 // TODO: InnerID is a md5 hashed value of a few things to get a unique thing,
 // so while not the hash algo I would have used it is what we want.
 type Window struct {
-	ID      string // TODO: Maybe store innerID and see if its something we can use
-	Title   string
-	Command string
-	PID     uint32
-	Type    WindowType
-	Focused bool // aka Active
+	//ID        string // TODO: Maybe store innerID and see if its something we
+	//can use-- but until we do we don't comment this out obvio
+	// only code in should be in active use or it should not be in
+	Title         string
+	Command       string
+	PID           uint32
+	Type          WindowType
+	LastUpdatedAt time.Time
+	//Focused bool // aka Active
 	//X11     x11.Window // The base Window object from our library
 	// eventually we should just load all this data into our window object and
 	// then be able to do like .XWindow() => x11.Window type
 	// There is also tons of window info data that may just be better to save
 	// in the form x11.WindowInfo, and that stores X11.Window inside it
 
-	LastUpdatedAt time.Time
-
-	Rectangle
+	// TODO: In the future we could use the size for determining
+	//       in the toolkit if the terminal is the primary or secondary
+	//       but this library is intended to be independent from the
+	//       streaming portion of the toolkit
+	//Rectangle
 }
 
-func EmptyWindow() *Window {
+func UndefinedWindow() *Window {
 	return &Window{
-		Type: UndefinedType,
+		Title:         "",
+		Type:          UndefinedType,
+		LastUpdatedAt: time.Now(),
 	}
 }
 
-func (w *Window) IsEmpty() bool    { return w.Type == UndefinedType }
-func IsWindowEmpty(w *Window) bool { return w.IsEmpty() }
-
-// TODO: Can generate x11.WindowInfo from x11.Window
-//func (x *X11) ParseWindow(xwin Window) (*Window, error) {
-//	name, err := ewmh.GetWMName(x.Client, xwin).Reply(x.Client)
-//	if err != nil {
-//		return nil, err
-//	} else {
-//		fmt.Printf("\tName: ")
-//		fmt.Printf("%s\n", name)
-//	}
-//
-//	pidString, err := ewmh.GetWMPid(x.Client, xwin).Reply(x.Client)
-//	if err != nil {
-//		return nil, err
-//	} else {
-//		fmt.Printf("\tPid:%v\n", pidString)
-//		data, _ := ioutil.ReadFile(fmt.Sprintf("/proc/%d/cmdline", pidString))
-//		fmt.Printf("\t\tCmdline: %v\n", data)
-//	}
-//
-//	pid, err := strconv.Atoi(pidString)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return &Window{
-//		Title: name,
-//		PID:   pid,
-//	}, nil
-//}
-
-var UndefinedWindow = Window{Title: "", Type: UndefinedType}
+func (w *Window) IsUndefined() bool    { return w.Type == UndefinedType }
+func IsWindowUndefined(w *Window) bool { return w.IsUndefined() }
 
 type WindowType uint8 // 0..255
 
@@ -137,39 +112,52 @@ const (
 	Other
 )
 
-//func (wt WindowType) String() string {
-//	switch wt {
-//	case Terminal:
-//		return "terminal"
-//	case Browser:
-//		return "browser"
-//	case Other:
-//		return "other"
-//	default: // UndefinedType
-//		return "undefined"
-//	}
-//}
-//
-//func MarshalWindowType(wt string) WindowType {
-//	switch strings.ToLower(wt) {
-//	case Terminal.String():
-//		return Terminal
-//	case Browser.String():
-//		return Browser
-//	case Other.String():
-//		return Other
-//	default:
-//		return UndefinedType
-//	}
-//}
-
-//primaryWindow.TitleSuffixIs("chromium")
-
-func (w *Window) TitleSuffixIs(searchText string) bool {
-	return strings.HasSuffix(strings.ToLower(w.Title), searchText)
+func (wt WindowType) String() string {
+	switch wt {
+	case Terminal:
+		return "terminal"
+	case Browser:
+		return "browser"
+	case Other:
+		return "other"
+	default: // UndefinedType
+		return "undefined"
+	}
 }
 
-func (w *Window) WindowTitleIs(title string) bool {
+func MarshalWindowType(wt string) WindowType {
+	switch strings.ToLower(wt) {
+	case Terminal.String():
+		return Terminal
+	case Browser.String():
+		return Browser
+	case Other.String():
+		return Other
+	default:
+		return UndefinedType
+	}
+}
+
+func (w *Window) WindowType() WindowType {
+	switch {
+	case w.CommandContains("gnome-terminal-server"):
+		return Terminal
+	case w.TitleSuffixIs("chromium"):
+		return Browser
+	default:
+		return UndefinedType
+	}
+}
+
+func (w *Window) TitleSuffixIs(suffix string) bool {
+	return strings.HasSuffix(strings.ToLower(w.Title), suffix)
+}
+
+func (w *Window) CommandContains(search string) bool {
+	return strings.Contains(w.Command, search)
+}
+
+func (w *Window) TitleIs(title string) bool {
 	return strings.ToLower(w.Title) == title
 }
 

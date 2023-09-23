@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	xserver "github.com/shehackedyou/streamkit/xserver"
@@ -19,29 +18,26 @@ func main() {
 		Description: "xserver command-line interface for interacting with toolkit",
 		Version:     cli.Version{Major: 0, Minor: 1, Patch: 0},
 		Actions: cli.Actions{
-			OnStart: func(c *cli.Context) error {
-				fmt.Printf("x11.Client: %v\n", x11.Client)
-
-				activeWindow := x11.ActiveWindow()
-
-				//if xserver.IsWindowEmpty(activeWindow) {
-				//	fmt.Printf("the returned window is empty...\n")
-				//} else {
-					fmt.Printf("did we get active window? (%v)\n", activeWindow)
-				//}
-
-				//toolkit.HandleWindowEvents()
-				// aDD all the listening and event driven stuff
-				return nil
-			},
+			//OnStart: func(c *cli.Context) error {
+			//	c.CLI.Log("onStart action")
+			//	return nil
+			//},
 			//Fallback: func(c *cli.Context) error {
 			//	c.CLI.Log("Fallback action")
 			//	return nil
 			//},
-			//OnExit: func(c *cli.Context) error {
-			//	c.CLI.Log("on exit action")
-			//	return nil
-			//},
+			OnExit: func(c *cli.Context) error {
+				c.CLI.Log("onExit action")
+
+				activeWindow := x11.ActiveWindow()
+				if xserver.IsWindowUndefined(activeWindow) {
+					c.CLI.Log("returned window is undefined...\n")
+				} else {
+					c.CLI.Log("active window?", activeWindow.Title)
+				}
+
+				return nil
+			},
 		},
 	})
 
