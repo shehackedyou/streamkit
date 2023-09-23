@@ -10,6 +10,19 @@ import (
 	sceneitems "github.com/andreykaipov/goobs/api/requests/sceneitems"
 )
 
+// TODO
+// NOW what needs to be done is simply this in broadcast module:
+//   * Transition to a different scene
+//   * Look up an item (even a sub-item, so consider maybe storing all item
+//   pointers in the show or scene instead of nesting, otherwise the lookup
+//   may be a pain. if we use the SAME pointer, changing one should correctly
+//   update it in ALL places. failure to get this functionality means failure
+//   to properly implement it.
+//   * Then lastly we need ability to hide and unhide items in scenes
+
+// WITH THAT we can finally go back to streamkit and piece the two components
+// together from broadcast and xserver and get our producerbot 100
+
 // TODO: obs folder is primarily legacy working obs interaction
 type OBS struct {
 	*obs.Broadcast
