@@ -71,9 +71,14 @@ func main() {
 				c.CLI.Log("onExit action")
 
 				fmt.Printf("scenes parsed?(%v)\n", len(obs.Show.Scenes))
-				fmt.Printf("now lets iterate over OUR type of scene...\n")
+				fmt.Printf("now lets iterate over OUR type of scene...\n\n")
+				fmt.Printf("scenes:\n")
 				for _, s := range obs.Show.Scenes {
-					fmt.Printf("Index:(%2d ) Name:( %s )\n", s.Index, s.Name)
+					fmt.Printf("  scene:\n")
+					fmt.Printf("    index:%2d\n", s.Index)
+					fmt.Printf("    name: %s\n", s.Name)
+					fmt.Printf("    items:\n")
+					fmt.Printf("      count: %v\n", len(s.Items))
 				}
 
 				return nil

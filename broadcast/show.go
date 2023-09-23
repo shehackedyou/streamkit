@@ -27,13 +27,13 @@ type Show struct {
 func OpenShow(name string) *Show {
 	return &Show{
 		Name:        name,
-		ActiveScene: &show.Scene{Name: ""},
-		StudioScene: &show.Scene{Name: ""},
+		ActiveScene: EmptyScene(),
+		StudioScene: EmptyScene(),
 		Scenes:      make([]*show.Scene, 0),
 	}
 }
 
-func (sh *Show) EmptyScene() *show.Scene {
+func EmptyScene() *show.Scene {
 	return &show.Scene{Name: ""}
 }
 
@@ -54,14 +54,18 @@ func (sh *Show) ParseScene(index int, name string) *show.Scene {
 		panic(err)
 	}
 
-	validScene := &show.Scene{
+	parsedScene := &show.Scene{
 		Index: index,
 		Name:  name,
 	}
 
-	sh.Scenes = append(sh.Scenes, validScene)
+	// TODO
+	// We need to be checking if the scene has already been parsed
+	// otherwise we are going to have a ton of duplicates and if
+	// we catch it here we can avoid headaches
+	sh.Scenes = append(sh.Scenes, parsedScene)
 
-	return validScene
+	return parsedScene
 }
 
 // GOOBS TYPEDEF

@@ -1,17 +1,35 @@
 package scene
 
+// NOTE
+// Collection functions
+type Items []*Item
+
+func EmptyItems() Items { return make([]*Item, 0) }
+
 type Item struct {
 	Id    int
 	Index int
 	Name  string
 	Type  SourceType
 
+	Parent *Item
+	Group  Items
+
 	// TODO
 	// Going to need a way to move up to show and scene without
 	// creating a loop of imports
 }
 
-type Items []*Item
+func EmptyItem() *Item {
+	return &Item{
+		Id:    -1,
+		Index: -1,
+		Name:  "",
+		Type:  UndefinedType,
+	}
+}
+
+func (i *Item) TypeIs(st SourceType) bool { return i.Type == st }
 
 type SourceType uint8
 
