@@ -1,6 +1,9 @@
 package broadcast
 
 import (
+	"fmt"
+	"strings"
+
 	show "github.com/shehackedyou/streamkit/broadcast/show"
 )
 
@@ -13,28 +16,35 @@ import (
 
 type Show struct {
 	//Id   int
-	Name string
-
 	// Season []*Season
 	// Episodes []*Episode
-
+	//StudioScene *show.Scene
+	Name        string
 	ActiveScene *show.Scene
-	StudioScene *show.Scene
-
-	Scenes []*show.Scene
+	Scenes      show.Scenes
 }
 
 func OpenShow(name string) *Show {
 	return &Show{
 		Name:        name,
 		ActiveScene: EmptyScene(),
-		StudioScene: EmptyScene(),
-		Scenes:      make([]*show.Scene, 0),
+		//StudioScene: EmptyScene(),
+		Scenes: make([]*show.Scene, 0),
 	}
 }
 
 func EmptyScene() *show.Scene {
 	return &show.Scene{Name: ""}
+}
+
+func (sh Show) YAML(spaces int) {
+	prefix := strings.Repeat(" ", spaces)
+	fmt.Printf("show:\n")
+	prefix = strings.Repeat(" ", spaces+2)
+	fmt.Printf("%sname: %v\n", prefix, sh.Name)
+	fmt.Printf("%sactive_scene:\n", prefix)
+	sh.ActiveScene.YAML(spaces + 4)
+	sh.Scenes.YAML(spaces + 4)
 }
 
 func (sh *Show) Scene(name string) *show.Scene {

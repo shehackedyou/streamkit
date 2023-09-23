@@ -1,6 +1,9 @@
 package show
 
 import (
+	"fmt"
+	"strings"
+
 	scene "github.com/shehackedyou/streamkit/broadcast/show/scene"
 )
 
@@ -9,19 +12,20 @@ import (
 // of scenes within a show
 type Scenes []*Scene
 
-func (scs Scenes) IsEmpty() bool { return len(scs) == 0 }
+func (scs Scenes) IsEmpty() bool    { return len(scs) == 0 }
+func (scs Scenes) IsNotEmpty() bool { return !scs.IsEmpty() }
 
 // TODO
 // Honestly not even sure if this makes sense since slices don't maintain order
 func (scs Scenes) First() *Scene {
-	if !scs.IsEmpty() {
+	if scs.IsNotEmpty() {
 		return scs[0]
 	}
 	return nil
 }
 
 func (scs Scenes) Last() *Scene {
-	if !scs.IsEmpty() {
+	if scs.IsNotEmpty() {
 		return scs[(len(scs) - 1)]
 	}
 	return nil
@@ -36,10 +40,36 @@ func (scs Scenes) Scene(name string) *Scene {
 	return nil
 }
 
+func (scs Scenes) YAML(spaces int) {
+	prefix := strings.Repeat(" ", spaces)
+	fmt.Printf("%sscenes:\n", prefix)
+	for _, sc := range scs {
+		prefix = strings.Repeat(" ", spaces+2)
+		fmt.Printf("%sscene:\n", prefix)
+		prefix = strings.Repeat(" ", spaces+4)
+		fmt.Printf("%sindex: %v\n", prefix, sc.Index)
+		fmt.Printf("%sname: %v\n", prefix, sc.Name)
+		if sc.Items.IsNotEmpty() {
+			sc.Items.YAML(spaces + 6)
+		}
+	}
+}
+
 type Scene struct {
 	Index int
 	Name  string
 	Items scene.Items
+}
+
+func (sc Scene) YAML(spaces int) {
+	prefix := strings.Repeat(" ", spaces)
+	fmt.Printf("%sscene:\n", prefix)
+	prefix = strings.Repeat(" ", spaces+2)
+	fmt.Printf("%sindex: %v\n", prefix, sc.Index)
+	fmt.Printf("%sname: %v\n", prefix, sc.Name)
+	if sc.Items.IsNotEmpty() {
+		sc.Items.YAML(spaces + 2)
+	}
 }
 
 func (sc *Scene) HasName(name string) bool {

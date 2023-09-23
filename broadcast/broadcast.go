@@ -83,27 +83,26 @@ func (o *OBS) ListSceneItems(parsedScene *show.Scene) {
 			item.SourceName,
 		)
 
-		fmt.Printf("item:\n")
-		fmt.Printf("  id: %v\n", parsedItem.Id)
-		fmt.Printf("  index: %v\n", parsedItem.Index)
-		fmt.Printf("  source_type: %v\n", parsedItem.Type.String())
-
 		// TODO
 		// Eventually sort by type, ones that are scene_type
 		// are better called "groups" but it doesn't even nest
 		// more than 1 level but we should be storing it but
 		// start with it
 		if parsedItem.TypeIs(scene.GroupType) {
-			o.SceneGroupList(parsedItem)
+			groupedItems := o.SceneGroupList(parsedScene, parsedItem)
+
+			parsedItem.Group = groupedItems
 		}
 
-		fmt.Printf("  source_name: %v\n", parsedItem.Name)
 	}
 }
 
 // TODO: hrmm this might need to be on scene or we have to pass the scene object
 // through if we want to parse it
-func (o *OBS) SceneGroupList(itemGroup *scene.Item) {
+func (o *OBS) SceneGroupList(
+	parsedScene *show.Scene,
+	itemGroup *scene.Item,
+) (groupedItems scene.Items) {
 	params := &sceneitems.GetGroupSceneItemListParams{
 		SceneName: itemGroup.Name,
 	}
@@ -114,17 +113,15 @@ func (o *OBS) SceneGroupList(itemGroup *scene.Item) {
 	}
 
 	for _, item := range response.SceneItems {
-		//scene.ParseItem(
-		//	item.SceneItemID,
-		//	item.SceneItemIndex,
-		//	item.SourceType,
-		//	item.SourceName,
-		//)
+		parsedGroupedItem := parsedScene.ParseItem(
+			item.SceneItemID,
+			item.SceneItemIndex,
+			item.SourceType,
+			item.SourceName,
+		)
 
-		fmt.Printf("  item_group:\n")
-		fmt.Printf("    id: %v\n", item.SceneItemID)
-		fmt.Printf("    index: %v\n", item.SceneItemIndex)
-		fmt.Printf("    source_type: %v\n", item.SourceType)
-		fmt.Printf("    source_name: %v\n", item.SourceName)
+		parsedGroupedItem.Parent = itemGroup
+		groupedItems = append(groupedItems, parsedGroupedItem)
 	}
+	return groupedItems
 }

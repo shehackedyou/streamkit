@@ -1,10 +1,26 @@
 package scene
 
+import (
+	"fmt"
+	"strings"
+)
+
 // NOTE
 // Collection functions
 type Items []*Item
 
+func (its Items) IsEmpty() bool    { return len(its) == 0 }
+func (its Items) IsNotEmpty() bool { return !its.IsEmpty() }
+
 func EmptyItems() Items { return make([]*Item, 0) }
+
+func (its Items) YAML(spaces int) {
+	prefix := strings.Repeat(" ", spaces)
+	fmt.Printf("%sitems:\n", prefix)
+	for _, item := range its {
+		item.YAML(spaces + 2)
+	}
+}
 
 type Item struct {
 	Id    int
@@ -20,12 +36,36 @@ type Item struct {
 	// creating a loop of imports
 }
 
+func (i Item) IsUndefined() bool    { return i.Type == UndefinedType }
+func (i Item) IsNotUndefined() bool { return !i.IsUndefined() }
+func (i *Item) IsNil() bool         { return i == nil }
+func (i *Item) IsNotNil() bool      { return !i.IsNil() }
+
 func EmptyItem() *Item {
 	return &Item{
 		Id:    -1,
 		Index: -1,
 		Name:  "",
 		Type:  UndefinedType,
+	}
+}
+
+func (i *Item) YAML(spaces int) {
+	prefix := strings.Repeat(" ", spaces)
+	fmt.Printf("%sitem:\n", prefix)
+	prefix = strings.Repeat(" ", spaces+2)
+	fmt.Printf("%sid: %v\n", prefix, i.Id)
+	fmt.Printf("%sindex: %v\n", prefix, i.Index)
+	fmt.Printf("%ssource_type: %v\n", prefix, i.Type.String())
+	fmt.Printf("%ssource_name: %v\n", prefix, i.Name)
+	if i.Parent.IsNotNil() {
+		fmt.Printf("%sparent_group: %v\n", prefix, i.Parent.Name)
+	}
+	if i.TypeIs(GroupType) {
+		fmt.Printf("%sgrouped_items:\n", prefix)
+		prefix = strings.Repeat(" ", spaces+4)
+		fmt.Printf("%sgrouped_count: %v\n", prefix, len(i.Group))
+		i.Group.YAML(spaces + 6)
 	}
 }
 
