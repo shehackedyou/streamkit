@@ -4,10 +4,6 @@ import (
 	"fmt"
 
 	goobs "github.com/andreykaipov/goobs"
-
-	events "github.com/andreykaipov/goobs/api/events"
-	ui "github.com/andreykaipov/goobs/api/requests/ui"
-	typedefs "github.com/andreykaipov/goobs/api/typedefs"
 )
 
 //type Source struct {
@@ -176,95 +172,89 @@ func MarshalBlendMode(mode string) BlendMode {
 //          obs.Show.Scenes.First()
 //          obs.Show.Scenes.First().Items.First().(Show()|.Hide())
 
-type Client struct {
-	WS *goobs.Client
+//type Client struct {
+//	WS *goobs.Client
+//
+//	// TODO: We want OBS to reflect whats running in the application and Show is
+//	// our local cache of it
+//	//Mode Mode
+//
+//	//Stats      *Stats
+//	//AudioMixer *AudioMixer
+//
+//	//Sources []*goobs.Source
+//}
 
-	// TODO: We want OBS to reflect whats running in the application and Show is
-	// our local cache of it
-	//Mode Mode
-
-	//Stats      *Stats
-	//AudioMixer *AudioMixer
-
-	//Sources []*goobs.Source
-}
-
-func LoadClient(addr string) Client {
-	return Client{
-		WS: Connect(addr),
-	}
-}
-
-func (obs Client) IsMode(mode Mode) bool {
-	switch mode {
-	case StudioMode, StreamingMode, RecordingMode:
-		return true
-	default:
-		return false
-	}
-}
-
-func (obs Client) ToggleStudioMode() bool {
-	toggledValue := !obs.IsMode(StudioMode)
-	studioModeEnabledParams := ui.SetStudioModeEnabledParams{
-		StudioModeEnabled: &toggledValue,
-	}
-
-	// NOTE: I hate using Ui,.. its an acronym :(
-	_, err := obs.WS.Ui.SetStudioModeEnabled(&studioModeEnabledParams)
-	return err == nil
-}
-
-//func (obs Client) StudioMode() bool {
-//	//obs.Mode = StudioMode
-//	// NOTE: This using pointer to a boolean is incredibly tedious
-//	studioMode := true
+//func (obs Client) IsMode(mode Mode) bool {
+//	switch mode {
+//	case StudioMode, StreamingMode, RecordingMode:
+//		return true
+//	default:
+//		return false
+//	}
+//}
+//
+//func (obs Client) ToggleStudioMode() bool {
+//	toggledValue := !obs.IsMode(StudioMode)
 //	studioModeEnabledParams := ui.SetStudioModeEnabledParams{
-//		StudioModeEnabled: &studioMode,
+//		StudioModeEnabled: &toggledValue,
 //	}
 //
+//	// NOTE: I hate using Ui,.. its an acronym :(
 //	_, err := obs.WS.Ui.SetStudioModeEnabled(&studioModeEnabledParams)
 //	return err == nil
 //}
-
-// go Events() to call this because its meant to be event driven-- but you know
-func (obs Client) Events() {
-	for event := range obs.WS.IncomingEvents {
-		switch e := event.(type) {
-		case *events.SceneItemEnableStateChanged:
-			fmt.Printf("Scene Item Enabled %-25q (%v): %v\n", e.SceneName, e.SceneItemId, e.SceneItemEnabled)
-		default:
-			fmt.Printf("Unhandled event: %#v\n", e)
-		}
-	}
-}
-
-// TODO: This returns typedefs, but we intend to abstract all those away so we
-// never should be returning them-- at least not as a public func
-func (obs Client) Scenes() ([]*typedefs.Scene, error) {
-	apiResponse, err := obs.WS.Scenes.GetSceneList()
-	return apiResponse.Scenes, err
-}
-
-//type Params requests.ParamsBasic
-//type Response requests.ResponseBasic
-
-//type Params struct {
-//	*requests.ParamsBasic
 //
-//	Name  string
-//	Value string
+////func (obs Client) StudioMode() bool {
+////	//obs.Mode = StudioMode
+////	// NOTE: This using pointer to a boolean is incredibly tedious
+////	studioMode := true
+////	studioModeEnabledParams := ui.SetStudioModeEnabledParams{
+////		StudioModeEnabled: &studioMode,
+////	}
+////
+////	_, err := obs.WS.Ui.SetStudioModeEnabled(&studioModeEnabledParams)
+////	return err == nil
+////}
+//
+//// go Events() to call this because its meant to be event driven-- but you know
+//func (obs Client) Events() {
+//	for event := range obs.WS.IncomingEvents {
+//		switch e := event.(type) {
+//		case *events.SceneItemEnableStateChanged:
+//			fmt.Printf("Scene Item Enabled %-25q (%v): %v\n", e.SceneName, e.SceneItemId, e.SceneItemEnabled)
+//		default:
+//			fmt.Printf("Unhandled event: %#v\n", e)
+//		}
+//	}
 //}
-
-// SceneName string `json:"scene-name,omitempty"`
-
-type AudioMixer []*Audio
-
-type Audio struct {
-	Name   string
-	Volume int
-	Muted  bool
-}
+//
+//// TODO: This returns typedefs, but we intend to abstract all those away so we
+//// never should be returning them-- at least not as a public func
+//func (obs Client) Scenes() ([]*typedefs.Scene, error) {
+//	apiResponse, err := obs.WS.Scenes.GetSceneList()
+//	return apiResponse.Scenes, err
+//}
+//
+////type Params requests.ParamsBasic
+////type Response requests.ResponseBasic
+//
+////type Params struct {
+////	*requests.ParamsBasic
+////
+////	Name  string
+////	Value string
+////}
+//
+//// SceneName string `json:"scene-name,omitempty"`
+//
+//type AudioMixer []*Audio
+//
+//type Audio struct {
+//	Name   string
+//	Volume int
+//	Muted  bool
+//}
 
 //////////////////////////////////
 

@@ -7,6 +7,8 @@ import (
 	sceneitems "github.com/andreykaipov/goobs/api/requests/sceneitems"
 )
 
+type Client *goobs.Client
+
 //type API struct {
 //	WS *goobs.Client
 //	*ShowAPI
@@ -23,6 +25,13 @@ type Broadcast struct {
 	Mode    []Mode
 	Program *Scene
 	Studio  *Scene
+}
+
+func DefaultConfig() map[string]string {
+	return map[string]string{
+		"name": "she hacked you",
+		"host": "10.100.100.1:4444",
+	}
 }
 
 func (bc *Broadcast) Cache() bool {
