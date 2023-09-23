@@ -275,7 +275,6 @@ func New() (toolkit *Toolkit) {
 //func (tk *Toolkit) parseSceneItems(name string) {
 //
 //	params := &sceneitems.GetSceneItemListParams{SceneName: "Primary"}
-//
 //	response, err := tk.OBS.WS.SceneItems.GetSceneItemList(params)
 //	//response, err := sceneitems.Client.SceneItems.GetSceneItemList(params)
 //
@@ -285,32 +284,4 @@ func New() (toolkit *Toolkit) {
 //
 //	fmt.Printf("response: %v\n", response)
 //
-//	//type GetSceneItemListResponse struct {
-//	//	SceneItems []*typedefs.SceneItem `json:"sceneItems,omitempty"`
-//	//}
-//
 //	//(*GetSceneItemListResponse, error) {
-//}
-//
-//func (tk *Toolkit) parseScenes() {
-//	scenes, err := tk.OBS.Scenes()
-//	if err != nil {
-//		fmt.Printf("error trying to get obs scenes(): %v", err)
-//	}
-//
-//	fmt.Printf("how many len(scenes): %v\n", len(scenes))
-//	for _, scene := range scenes {
-//		fmt.Printf("scene.Name:\n", scene.SceneName)
-//	}
-//
-//	for _, scene := range scenes {
-//		tk.Show.ParseScene(scene.SceneName, scene.SceneIndex)
-//		sceneItems, err := tk.parseSceneItems(scene.SceneName)
-//
-//	}
-//	if err != nil {
-//		fmt.Printf("error is not nil, so it has an error-- get it?\n")
-//
-//		fmt.Printf("error trying to get obs scenes(): %v\n", err)
-//	}
-//}
