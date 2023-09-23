@@ -27,12 +27,11 @@ type Path string
 
 type Toolkit struct {
 	// NOTE: Short-poll rate [we will rewrite without short polling after]
-	Delay    time.Duration
-	OBS      *obs.Client
-	XWayland *xserver.X11
+	Delay     time.Duration
+	Broadcast *obs.Broadcast
+	XWayland  *xserver.X11
 	// TODO: Our local copy of the show is entirely separate from obs.Client so we
 	// can change that out while maintaining logic and a data object
-	Show   *broadcast.Show
 	Config map[string]string
 	Paths  map[PathType]Path
 }
@@ -40,7 +39,7 @@ type Toolkit struct {
 func DefaultConfig() map[string]string {
 	return map[string]string{
 		"name":    "she hacked you",
-		"obs":     "10.100.100.1:4444",
+		"obs":     obs.DefaultConfig()["host"],
 		"xserver": xserver.DefaultConfig()["host"],
 	}
 }
@@ -71,8 +70,11 @@ func New() (toolkit *Toolkit) {
 		Show: &broadcast.Show{
 			Scenes: make([]*show.Scene, 0),
 		},
-		OBS: &obs.Client{
-			WS: obs.Connect(toolkitConfig["obs"]),
+		Broadcast: &obs.Broadcast{
+			Name: "she hacked you",
+			Client: &obs.Client{
+				WS: obs.Connect(toolkitConfig["obs"]),
+			},
 		},
 		XWayland: &xserver.X11{
 			Client: xserver.Connect(toolkitConfig["xserver"]),

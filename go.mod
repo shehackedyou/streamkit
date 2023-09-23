@@ -1,6 +1,6 @@
 module github.com/shehackedyou/streamkit
 
-go 1.19
+go 1.15
 
 replace (
 	github.com/multiverse-os/cli/terminal/ansi => github.com/multiverse-os/ansi v0.0.0-20230212053502-2711fc61f14d
