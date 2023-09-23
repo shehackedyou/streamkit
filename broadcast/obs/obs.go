@@ -4,6 +4,29 @@ import (
 	goobs "github.com/andreykaipov/goobs"
 )
 
+// TODO
+// Stick all the typedefs and any goobs stuff in here and segregate
+// it from the Show so that it can be independent from obs or goobs
+// it may seem dumb at this point but its about short term and long
+// term goals. and generally demonstrates better design principles
+
+// TODO
+// Really little point in doing this unless we migrate quite literally
+// move all typedefs over and at that point we are just removing
+// goobs
+//type GetSceneItemListResponse struct {
+//	SceneItems []*typedefs.SceneItem `json:"sceneItems,omitempty"`
+//}
+//
+//type GetGroupSceneItemListResponse struct {
+//	SceneItems []*typedefs.SceneItem `json:"sceneItems,omitempty"`
+//}
+//
+//type GetGroupSceneItemListParams struct {
+//	// Name of the group to get the items of
+//	SceneName string `json:"sceneName,omitempty"`
+//}
+
 //type Source struct {
 //
 //}
@@ -13,7 +36,7 @@ import (
 //	Disk   int
 //	Memory int
 //}
-//
+
 //type Stats struct {
 //	Usage     Usage
 //	Streaming bool
