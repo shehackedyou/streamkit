@@ -154,7 +154,7 @@ func (sc *Scene) Transition(sleepDuration ...time.Duration) (*Scene, bool) {
 
 	if err == nil {
 		sc.IsCurrent = true
-		sc.Broadcast.Program = sc
+		sc.Broadcast.Scene = sc
 	}
 
 	return sc, err == nil

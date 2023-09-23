@@ -1,8 +1,6 @@
 package obs
 
 import (
-	"fmt"
-
 	goobs "github.com/andreykaipov/goobs"
 )
 
@@ -91,15 +89,10 @@ func MarshalAlignment(alignment int) Alignment { return Alignment(alignment) }
 // TODO: This should either give the full OBS object returned (like an init
 // function) or this should be a method on OBS after it is created you connect.
 func Connect(host string) *goobs.Client {
-	fmt.Printf("start of OBS\n")
 	client, err := goobs.New(host)
 	if err != nil {
-		fmt.Printf("err: %v", err)
-	} else {
-		fmt.Printf("client: %v\n", client)
+		panic(err)
 	}
-
-	fmt.Print("returning client\n")
 	return client
 }
 

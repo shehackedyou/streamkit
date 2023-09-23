@@ -12,7 +12,7 @@ import (
 // certainly missed if not thought long abuot it
 
 type Show struct {
-	Id   int
+	//Id   int
 	Name string
 
 	// Season []*Season
@@ -22,6 +22,15 @@ type Show struct {
 	StudioScene *show.Scene
 
 	Scenes []*show.Scene
+}
+
+func OpenShow(name string) *Show {
+	return &Show{
+		Name:        name,
+		ActiveScene: &show.Scene{Name: ""},
+		StudioScene: &show.Scene{Name: ""},
+		Scenes:      make([]*show.Scene, 0),
+	}
 }
 
 func (sh *Show) EmptyScene() *show.Scene {
@@ -37,7 +46,7 @@ func (sh *Show) Scene(name string) *show.Scene {
 	return nil
 }
 
-func (sh *Show) ParseScene(name string, index int) *show.Scene {
+func (sh *Show) ParseScene(index int, name string) *show.Scene {
 	// Validate name & index
 	var err error
 	if !(0 < len(name) && len(name) < 255) &&

@@ -20,6 +20,5 @@ func (sc *Scene) Item(name string) *scene.Item {
 }
 
 func (sc *Scene) ParseItem(name string, index int) *scene.Item {
-
 	return &scene.Item{}
 }
