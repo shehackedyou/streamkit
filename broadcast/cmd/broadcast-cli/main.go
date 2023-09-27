@@ -32,6 +32,30 @@ func main() {
 					return nil
 				},
 			},
+			cli.Command{
+				Name:        "transition",
+				Alias:       "t",
+				Description: "transition obs program scene",
+				Action: func(c *cli.Context) error {
+					fmt.Printf("obs.ListScenes() which is really caching the scenes locally...\n")
+					obs.ListScenes()
+
+					endScene := obs.Show.Scenes.First()
+					fmt.Printf("obs.Show.Scenes.First() => endScene(%v)\n", endScene)
+
+					primaryScene := obs.Show.Scenes.Last()
+					fmt.Printf("obs.Show.Scenes.Last() => primaryScene(%v)\n", primaryScene)
+
+					ok, err := obs.SceneTransition(primaryScene)
+					if err != nil {
+						panic(err)
+					}
+					fmt.Printf("did we transition?\n")
+					fmt.Printf("we should return FALSE if primaryScene is already current!(%v)\n", ok)
+
+					return nil
+				},
+			},
 			//cli.Command{
 			//	Name:        "items",
 			//	Alias:       "i",
@@ -72,8 +96,7 @@ func main() {
 
 				fmt.Printf("scenes parsed?(%v)\n", len(obs.Show.Scenes))
 				fmt.Printf("now lets iterate over OUR type of scene...\n\n")
-
-				obs.Show.YAML(0)
+				//obs.Show.YAML(0)
 
 				return nil
 			},

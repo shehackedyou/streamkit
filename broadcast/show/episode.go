@@ -1,5 +1,5 @@
 package show
 
-type Episode struct {
-	Name string
-}
+//type Episode struct {
+//	Name string
+//}

@@ -7,30 +7,34 @@ import (
 	show "github.com/shehackedyou/streamkit/broadcast/show"
 )
 
-// TODO: We will need to restructure the goobs from our show object since it
-// could just as easily be ffmpeg of output of window that is assembled from
-// v42l and whatever else
-
-// Doing this disentanglement has a lot of cascading benefits that may almost
-// certainly missed if not thought long abuot it
-
 type Show struct {
 	//Id   int
 	// Season []*Season
 	// Episodes []*Episode
-	//StudioScene *show.Scene
-	Name        string
-	ActiveScene *show.Scene
-	Scenes      show.Scenes
+	Name   string
+	Scenes show.Scenes
+	// TODO
+	// While the concept of creating managing or even automating scenes makes
+	// sense here but we have to decide if the show stores the OBS concept of the
+	// newly named ProgramScene (Active Scene) and Preview Scene (previously
+	// poorly named Studio Scene). Honestly it could fit in ~~both~~.
+
+	// But keep in mind we wanted the Show to be segregated from OBS. But the
+	// concept of the scene especially OUR abstraction and datatype could easily
+	// apply to a 2D engine if done correctly.
+	ProgramScene *show.Scene
+	PreviewScene *show.Scene
 }
 
 func OpenShow(name string) *Show {
-	return &Show{
-		Name:        name,
-		ActiveScene: EmptyScene(),
-		//StudioScene: EmptyScene(),
-		Scenes: make([]*show.Scene, 0),
+	show := &Show{
+		Name:         name,
+		ProgramScene: EmptyScene(),
+		PreviewScene: EmptyScene(),
+		Scenes:       make([]*show.Scene, 0),
 	}
+
+	return show
 }
 
 func EmptyScene() *show.Scene {
@@ -43,7 +47,12 @@ func (sh Show) YAML(spaces int) {
 	prefix = strings.Repeat(" ", spaces+2)
 	fmt.Printf("%sname: %v\n", prefix, sh.Name)
 	fmt.Printf("%sactive_scene:\n", prefix)
-	sh.ActiveScene.YAML(spaces + 4)
+	if sh.ProgramScene.IsNotNil() {
+		sh.ProgramScene.YAML(spaces + 4)
+	}
+	if sh.PreviewScene.IsNotNil() {
+		sh.PreviewScene.YAML(spaces + 4)
+	}
 	sh.Scenes.YAML(spaces + 4)
 }
 
@@ -77,10 +86,3 @@ func (sh *Show) ParseScene(index int, name string) *show.Scene {
 
 	return parsedScene
 }
-
-// GOOBS TYPEDEF
-//
-//	type Scene struct {
-//		SceneIndex int    `json:"sceneIndex"`
-//		SceneName  string `json:"sceneName"`
-//	}

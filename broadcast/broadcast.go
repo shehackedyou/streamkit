@@ -8,6 +8,7 @@ import (
 	scene "github.com/shehackedyou/streamkit/broadcast/show/scene"
 
 	sceneitems "github.com/andreykaipov/goobs/api/requests/sceneitems"
+	scenes "github.com/andreykaipov/goobs/api/requests/scenes"
 )
 
 // TODO
@@ -29,8 +30,24 @@ type OBS struct {
 	Show *Show
 }
 
+func New() *OBS {
+	obs := &OBS{
+		Broadcast: Connect(DefaultConfig()["host"]),
+		Show:      OpenShow(DefaultConfig()["name"]),
+	}
+	// TODO: Getting close to when we want to make this both return the scenes and
+	// possibly call it cache scenes
+	obs.ListScenes()
+	obs.Show.ProgramScene = obs.GetProgramScene()
+	obs.Show.PreviewScene = obs.GetPreviewScene()
+
+	return obs
+}
+
 func DefaultConfig() map[string]string {
-	return obs.DefaultConfig()
+	defaultConfig := obs.DefaultConfig()
+	defaultConfig["name"] = "she hacked you"
+	return defaultConfig
 }
 
 func Connect(host string) *obs.Broadcast {
@@ -137,4 +154,70 @@ func (o *OBS) SceneGroupList(
 		groupedItems = append(groupedItems, parsedGroupedItem)
 	}
 	return groupedItems
+}
+
+// NOTE
+// There is an ENTIRE section on transitions now completely segregated from
+// scenes and the scene setcurrentprogramscene which is a transition
+//
+// Transitions let you change duration, style, etc; but obviously we want to
+// combine that back together into a scene object; we start here, get our logic
+// working and then migrate the majority of the specific logic to the places it
+// should go-- first priority producerbot100
+
+// TODO
+// IT WORKS but it also will return true if the scene doesnt change because we
+// try switching to the already current scene; obs doesnt toss errors so we ahve
+// too!
+
+// NEXT UP item hiding and unhiding! and I GUESS looking up a specific item,
+// going to need to do that I GUESS if we want to control said ITEM
+func (o *OBS) GetProgramScene() *show.Scene {
+	params := &scenes.GetCurrentProgramSceneParams{}
+
+	response, err := o.Client.Scenes.GetCurrentProgramScene(params)
+	if err != nil {
+		return nil
+	}
+
+	programSceneName := response.CurrentProgramSceneName
+	if len(programSceneName) == 0 {
+		return nil
+	}
+
+	return o.Show.Scene(programSceneName)
+}
+
+func (o *OBS) GetPreviewScene() *show.Scene {
+	params := &scenes.GetCurrentPreviewSceneParams{}
+
+	response, err := o.Client.Scenes.GetCurrentPreviewScene(params)
+	if err != nil {
+		return nil
+	}
+
+	previewSceneName := response.CurrentPreviewSceneName
+	if len(previewSceneName) == 0 {
+		return nil
+	}
+
+	return o.Show.Scene(previewSceneName)
+}
+
+func (o *OBS) SceneTransition(scene *show.Scene) (bool, error) {
+	if o.Show.ProgramScene.Index == scene.Index {
+		return false, fmt.Errorf("scene already program scene")
+	}
+
+	params := &scenes.SetCurrentProgramSceneParams{
+		SceneName: scene.Name,
+	}
+
+	_, err := o.Client.Scenes.SetCurrentProgramScene(params)
+	if err != nil {
+		return false, err
+	}
+
+	o.Show.ProgramScene = scene
+	return true, nil
 }

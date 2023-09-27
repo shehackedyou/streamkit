@@ -61,6 +61,11 @@ type Scene struct {
 	Items scene.Items
 }
 
+// TODO: These make more sense as we build in more validation on any and every
+// input because we are writing secure software (sorta; ok not really)
+func (sc *Scene) IsNil() bool    { return sc == nil }
+func (sc *Scene) IsNotNil() bool { return !sc.IsNil() }
+
 func (sc Scene) YAML(spaces int) {
 	prefix := strings.Repeat(" ", spaces)
 	fmt.Printf("%sscene:\n", prefix)
@@ -88,7 +93,7 @@ func (sc *Scene) Item(name string) *scene.Item {
 			return item
 		}
 	}
-	return scene.EmptyItem()
+	return nil
 }
 
 func (sc *Scene) ParseItem(id, index int, iType, name string) *scene.Item {
@@ -100,6 +105,8 @@ func (sc *Scene) ParseItem(id, index int, iType, name string) *scene.Item {
 		!(0 < len(iType) && len(iType) < 128) &&
 		!(0 <= index && index < 999) &&
 		!(0 <= id && id < 999) {
+		// TODO: If we are failing to parse an item we have big problems;
+		// especially after all this validation
 		panic(err)
 	}
 

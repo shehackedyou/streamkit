@@ -27,6 +27,13 @@ import (
 //	SceneName string `json:"sceneName,omitempty"`
 //}
 
+//type SetCurrentProgramSceneParams struct {
+//	// Scene to set as the current program scene
+//	SceneName string `json:"sceneName,omitempty"`
+//}
+
+///////////////////////////////////////////////////////////////////////////////
+
 //type Source struct {
 //
 //}
