@@ -17,7 +17,7 @@ import (
 //   * Look up an item (even a sub-item, so consider maybe storing all item
 //   pointers in the show or scene instead of nesting, otherwise the lookup
 //   may be a pain. if we use the SAME pointer, changing one should correctly
-//   update it in ALL places. failure to get this functionality means failure
+//   update it in ALL places. failure to get this functionality means failureS
 //   to properly implement it.
 //   * Then lastly we need ability to hide and unhide items in scenes
 
@@ -60,7 +60,6 @@ func Connect(host string) *obs.Broadcast {
 // So when we need to access the client to load our show objects
 // we want to do it at this level to eventually obsolete the obs
 // folder
-
 // TODO
 // So this works, next we want to load the items...
 // cleanup and fix it to be better later just get functionality
@@ -156,20 +155,33 @@ func (o *OBS) SceneGroupList(
 	return groupedItems
 }
 
+func (o *OBS) GetSceneItemId(sc *show.Scene, offset float64, it string) float64 {
+	params := &sceneitems.GetSceneItemIdParams{
+		SceneName:    sc.Name,
+		SearchOffset: offset,
+		SourceName:   it,
+	}
+
+	response, err := o.Client.SceneItems.GetSceneItemId(params)
+	if err != nil {
+		return 0
+	}
+
+	return response.SceneItemId
+}
+
+func (o *OBS) HideItem() *show.Scene {
+
+	return nil
+}
+
 // NOTE
 // There is an ENTIRE section on transitions now completely segregated from
 // scenes and the scene setcurrentprogramscene which is a transition
-//
 // Transitions let you change duration, style, etc; but obviously we want to
 // combine that back together into a scene object; we start here, get our logic
 // working and then migrate the majority of the specific logic to the places it
 // should go-- first priority producerbot100
-
-// TODO
-// IT WORKS but it also will return true if the scene doesnt change because we
-// try switching to the already current scene; obs doesnt toss errors so we ahve
-// too!
-
 // NEXT UP item hiding and unhiding! and I GUESS looking up a specific item,
 // going to need to do that I GUESS if we want to control said ITEM
 func (o *OBS) GetProgramScene() *show.Scene {
@@ -202,6 +214,18 @@ func (o *OBS) GetPreviewScene() *show.Scene {
 	}
 
 	return o.Show.Scene(previewSceneName)
+}
+
+func (o *OBS) IsStudioMode() bool {
+	params := &scenes.GetCurrentPreviewSceneParams{}
+
+	response, err := o.Client.Scenes.GetCurrentPreviewScene(params)
+	if err != nil {
+		return false
+	}
+
+	previewSceneName := response.CurrentPreviewSceneName
+	return len(previewSceneName) != 0
 }
 
 func (o *OBS) SceneTransition(scene *show.Scene) (bool, error) {
