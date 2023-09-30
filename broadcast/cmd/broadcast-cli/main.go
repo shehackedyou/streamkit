@@ -148,7 +148,27 @@ func main() {
 							cli.Flag{
 								Name:        "id",
 								Alias:       "i",
-								Description: "Select the name of the item id",
+								Description: "Select by id from selected scene",
+							},
+							cli.Flag{
+								Name:        "hide",
+								Alias:       "h",
+								Description: "Selected by id hide from selected scene",
+							},
+							cli.Flag{
+								Name:        "unhide",
+								Alias:       "u",
+								Description: "Selected by id unhide from selected scene",
+							},
+							cli.Flag{
+								Name:        "lock",
+								Alias:       "l",
+								Description: "Selected by id lock from selected scene",
+							},
+							cli.Flag{
+								Name:        "unlock",
+								Alias:       "n",
+								Description: "Selected by id unlock from selected scene",
 							},
 						),
 						Action: func(c *cli.Context) error {
@@ -164,6 +184,21 @@ func main() {
 								if itemId != -1 {
 									if item := scene.ItemById(itemId); item != nil {
 										item.YAML(2)
+
+										if hide := c.Flag("hide").Bool(); hide != false {
+											fmt.Printf("Hiding item\n")
+											item.Hide()
+										} else if unhide := c.Flag("unhide").Bool(); unhide != false {
+											fmt.Printf("Unhiding item\n")
+											item.Unhide()
+										} else if lock := c.Flag("lock").Bool(); lock != false {
+											fmt.Printf("Locking item\n")
+											item.Lock()
+										} else if unlock := c.Flag("unlock").Bool(); unlock != false {
+											fmt.Printf("Unlocking item\n")
+											item.Unlock()
+										}
+
 										return nil
 									}
 								}
