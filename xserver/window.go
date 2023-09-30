@@ -64,37 +64,21 @@ type Rectangle struct {
 	Width, Height uint16
 }
 
-// TODO: A function to move window would be great for setting up development
-// environments or at the very least setting up streaming automatically
-
-// TODO: InnerID is a md5 hashed value of a few things to get a unique thing,
-// so while not the hash algo I would have used it is what we want.
 type Window struct {
-	//ID        string // TODO: Maybe store innerID and see if its something we
-	//can use-- but until we do we don't comment this out obvio
-	// only code in should be in active use or it should not be in
+	X11           *X11
 	Title         string
 	Command       string
 	PID           uint32
 	Type          WindowType
 	LastUpdatedAt time.Time
-	//Focused bool // aka Active
-	//X11     x11.Window // The base Window object from our library
-	// eventually we should just load all this data into our window object and
-	// then be able to do like .XWindow() => x11.Window type
-	// There is also tons of window info data that may just be better to save
-	// in the form x11.WindowInfo, and that stores X11.Window inside it
-
-	// TODO: In the future we could use the size for determining
-	//       in the toolkit if the terminal is the primary or secondary
-	//       but this library is intended to be independent from the
-	//       streaming portion of the toolkit
-	//Rectangle
 }
 
 func UndefinedWindow() *Window {
 	return &Window{
+		X11:           nil,
 		Title:         "",
+		Command:       "",
+		PID:           0,
 		Type:          UndefinedType,
 		LastUpdatedAt: time.Now(),
 	}
@@ -142,14 +126,18 @@ func (w *Window) WindowType() WindowType {
 	switch {
 	case w.CommandContains("gnome-terminal-server"):
 		return Terminal
-	case w.TitleSuffixIs("chromium"):
+	case w.HasTitleSuffix("chromium"):
 		return Browser
 	default:
 		return UndefinedType
 	}
 }
 
-func (w *Window) TitleSuffixIs(suffix string) bool {
+func (w *Window) IsType(wt WindowType) bool {
+	return w.Type == wt
+}
+
+func (w *Window) HasTitleSuffix(suffix string) bool {
 	return strings.HasSuffix(strings.ToLower(w.Title), suffix)
 }
 
@@ -157,10 +145,6 @@ func (w *Window) CommandContains(search string) bool {
 	return strings.Contains(w.Command, search)
 }
 
-func (w *Window) TitleIs(title string) bool {
+func (w *Window) HasTitle(title string) bool {
 	return strings.ToLower(w.Title) == title
-}
-
-func (w *Window) IsWindowType(windowType WindowType) bool {
-	return w.Type == windowType
 }
