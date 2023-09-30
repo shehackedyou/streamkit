@@ -80,10 +80,10 @@ func main() {
 					},
 				),
 				Action: func(c *cli.Context) error {
-					show.GetSceneList()
+					scenes := show.GetSceneList()
 
 					fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
-					fmt.Printf(" this is what runs scenes and gives us a list\n")
+					scenes.YAML(0)
 					fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
 
 					return nil
@@ -132,6 +132,26 @@ func main() {
 							return nil
 						},
 					},
+					cli.Command{
+						Name:        "items",
+						Alias:       "i",
+						Description: "list all items of scene",
+						Action: func(c *cli.Context) error {
+							sceneName := c.Flag("name").String()
+							if len(sceneName) == 0 {
+								return fmt.Errorf("failed to provide scene name")
+							}
+
+							scene := show.Scene(sceneName)
+
+							items := show.ListSceneItems(scene)
+
+							items.YAML(2)
+
+							fmt.Printf("scene(%v) with index(%v)\n", scene, scene.Index)
+							return nil
+						},
+					},
 				),
 				Action: func(c *cli.Context) error {
 					c.CLI.Log(" action of scene")
@@ -157,7 +177,6 @@ func main() {
 		Actions: cli.Actions{
 			OnStart: func(c *cli.Context) error {
 				c.CLI.Log("[onStart] action")
-				show.GetSceneList()
 				return nil
 			},
 			//Fallback: func(c *cli.Context) error {

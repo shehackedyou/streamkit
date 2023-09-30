@@ -77,10 +77,10 @@ func (show *Show) GetSceneList() (scenes Scenes) {
 	}
 	for _, scene := range response.Scenes {
 		fmt.Printf("%2d %s\n", scene.SceneIndex, scene.SceneName)
-		parsedScene := show.ParseScene(scene.SceneIndex, scene.SceneName)
-		scenes = append(scenes, parsedScene)
+		scene := show.ParseScene(scene.SceneIndex, scene.SceneName)
+		scenes = append(scenes, scene)
 
-		show.ListSceneItems(parsedScene)
+		scene.Items = show.ListSceneItems(scene)
 	}
 	return scenes
 }

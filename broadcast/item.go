@@ -78,10 +78,10 @@ func (i *Item) YAML(spaces int) {
 	prefix := strings.Repeat(" ", spaces)
 	fmt.Printf("%sitem:\n", prefix)
 	prefix = strings.Repeat(" ", spaces+2)
-	fmt.Printf("%sid: %v\n", prefix, i.Id)
 	fmt.Printf("%sindex: %v\n", prefix, i.Index)
-	fmt.Printf("%ssource_type: %v\n", prefix, i.Type.String())
+	fmt.Printf("%sid: %v\n", prefix, i.Id)
 	fmt.Printf("%ssource_name: %v\n", prefix, i.Name)
+	fmt.Printf("%ssource_type: %v\n", prefix, i.Type.String())
 	if i.Parent.IsNotNil() {
 		fmt.Printf("%sparent_group: %v\n", prefix, i.Parent.Name)
 	}
