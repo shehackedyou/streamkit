@@ -93,7 +93,7 @@ func (show *Show) ListSceneItems(scene *Scene) Items {
 	}
 
 	for _, item := range response.SceneItems {
-		if scene.Item(item.SourceName).IsNotNil() {
+		if scene.Item(item.SourceName).IsNil() {
 			parsedItem := scene.ParseItem(
 				float64(item.SceneItemID),
 				float64(item.SceneItemIndex),
@@ -124,12 +124,14 @@ func (show *Show) GetGroupedItemList(scene *Scene, groupedItem *Item) Items {
 	}
 
 	for _, item := range response.SceneItems {
-		groupedItem.ParseGroupItem(
-			float64(item.SceneItemID),
-			float64(item.SceneItemIndex),
-			item.SourceType,
-			item.SourceName,
-		)
+		if scene.Item(item.SourceName).IsNil() {
+			groupedItem.ParseGroupItem(
+				float64(item.SceneItemID),
+				float64(item.SceneItemIndex),
+				item.SourceType,
+				item.SourceName,
+			)
+		}
 	}
 	return groupedItem.Group
 }

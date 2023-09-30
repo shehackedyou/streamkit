@@ -35,7 +35,8 @@ func (sh Show) YAML(spaces int) {
 
 func (sh *Show) Scene(name string) *Scene {
 	for _, scene := range sh.Scenes {
-		if scene.Name == name {
+		if len(scene.Name) == len(name) &&
+			scene.Name == name {
 			return scene
 		}
 	}

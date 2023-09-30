@@ -53,7 +53,8 @@ func (is Items) Name(name string) *Item {
 		}
 		if item.TypeIs(GroupType) {
 			for _, groupItem := range item.Group {
-				if groupItem.Name == name {
+				if len(groupItem.Name) == len(name) &&
+					groupItem.Name == name {
 					return groupItem
 				}
 			}
