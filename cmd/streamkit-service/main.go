@@ -9,10 +9,6 @@ import (
 	cli "github.com/multiverse-os/cli"
 )
 
-// NOTE:
-// OBS Augmentation Software
-// The initial goal of this software is to augment OBS
-
 func main() {
 	toolkit := streamkit.New()
 
@@ -22,10 +18,18 @@ func main() {
 		Version:     cli.Version{Major: 0, Minor: 1, Patch: 0},
 		Actions: cli.Actions{
 			OnStart: func(c *cli.Context) error {
-				//toolkit.HandleWindowEvents()
-				// aDD all the listening and event driven stuff
+				c.CLI.Log("[onStart] performing action...")
+				toolkit.X11.ActiveWindowMonitor()
 				return nil
 			},
+			//Fallback: func(c *cli.Context) error {
+			//	c.CLI.Log("[fallback] performing action...")
+			//	return nil
+			//},
+			//OnExit: func(c *cli.Context) error {
+			//	c.CLI.Log("[onExit] performing action...")
+			//	return nil
+			//},
 		},
 	})
 
@@ -33,35 +37,10 @@ func main() {
 
 	if len(initErrors) == 0 {
 		cmd.Parse(os.Args).Execute()
+	} else {
+		fmt.Printf("errors initializing cli.App\n")
+		for _, err := range initErrors {
+			fmt.Printf("error(%v)\n", err)
+		}
 	}
 }
-
-//list, _ := client.Inputs.GetInputList()
-
-//import typedefs "github.com/andreykaipov/goobs/api/typedefs"
-//
-//// Represents the request body for the GetSceneItemList request.
-//type GetSceneItemListParams struct {
-//	// Name of the scene to get the items of
-//	SceneName string `json:"sceneName,omitempty"`
-//}
-//
-//// Returns the associated request.
-//func (o *GetSceneItemListParams) GetRequestName() string {
-//	return "GetSceneItemList"
-//}
-//
-//// Represents the response body for the GetSceneItemList request.
-//type GetSceneItemListResponse struct {
-//	SceneItems []*typedefs.SceneItem `json:"sceneItems,omitempty"`
-//}
-//
-///*
-//Gets a list of all scene items in a scene.
-//
-//Scenes only
-//*/
-//func (c *Client) GetSceneItemList(params *GetSceneItemListParams) (*GetSceneItemListResponse, error) {
-//	data := &GetSceneItemListResponse{}
-//	return data, c.SendRequest(params, data)
-//}

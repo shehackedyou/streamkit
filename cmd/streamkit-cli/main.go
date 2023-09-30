@@ -18,7 +18,7 @@ func main() {
 		Version:     cli.Version{Major: 0, Minor: 1, Patch: 0},
 		Actions: cli.Actions{
 			OnStart: func(c *cli.Context) error {
-				toolkit.X11.ActiveWindowMonitor()
+				c.CLI.Log("[onStart] preforming action...")
 				//toolkit.HandleWindowEvents()
 				// aDD all the listening and event driven stuff
 				return nil
