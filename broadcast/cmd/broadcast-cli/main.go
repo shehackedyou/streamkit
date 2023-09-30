@@ -144,18 +144,33 @@ func main() {
 						Name:        "items",
 						Alias:       "i",
 						Description: "list all items of scene",
+						Flags: cli.Flags(
+							cli.Flag{
+								Name:        "id",
+								Alias:       "i",
+								Description: "Select the name of the item id",
+							},
+						),
 						Action: func(c *cli.Context) error {
+							c.CLI.Log("scene > items")
 							sceneName := c.Flag("name").String()
 							if len(sceneName) == 0 {
+								fmt.Printf("failed to provide scene name")
 								return fmt.Errorf("failed to provide scene name")
 							}
 
-							scene := show.Scene(sceneName)
-							if scene.IsNotNil() {
-								items := show.ListSceneItems(scene)
-								if items.IsNotEmpty() {
-									items.YAML(2)
+							if scene := show.Scene(sceneName); scene != nil {
+								itemId := c.Flag("id").Float64()
+								if itemId != -1 {
+									if item := scene.ItemById(itemId); item != nil {
+										item.YAML(2)
+										return nil
+									}
 								}
+								scene.YAML(0)
+							} else {
+								fmt.Printf("failed to locate scene")
+								return fmt.Errorf("failed to locate scene")
 							}
 
 							return nil
@@ -170,6 +185,8 @@ func main() {
 					}
 
 					scene := show.Scene(sceneName)
+
+					fmt.Printf("scene(%v)\n", scene)
 					// TODO
 					// Our problem is now that this will work but we need a before action
 					// to grab our scene on our subcommands

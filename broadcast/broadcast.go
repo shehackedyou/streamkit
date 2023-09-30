@@ -58,18 +58,6 @@ func Connect(host string) OBS {
 	return client
 }
 
-// TODO
-// So when we need to access the client to load our show objects
-// we want to do it at this level to eventually obsolete the obs
-// folder
-// TODO
-// So this works, next we want to load the items...
-// cleanup and fix it to be better later just get functionality
-// needed:
-//  1. transition scenes
-//  2. unhide/hide items within scenes
-//
-// Thats what is all remaining needed for most basic producerbot
 func (show *Show) GetSceneList() Scenes {
 	response, err := show.OBS.Scenes.GetSceneList()
 	if err != nil {
@@ -93,7 +81,7 @@ func (show *Show) ListSceneItems(scene *Scene) Items {
 	}
 
 	for _, item := range response.SceneItems {
-		if scene.Item(item.SourceName).IsNil() {
+		if scene.ItemByName(item.SourceName).IsNil() {
 			parsedItem := scene.ParseItem(
 				float64(item.SceneItemID),
 				float64(item.SceneItemIndex),
@@ -124,7 +112,7 @@ func (show *Show) GetGroupedItemList(scene *Scene, groupedItem *Item) Items {
 	}
 
 	for _, item := range response.SceneItems {
-		if scene.Item(item.SourceName).IsNil() {
+		if scene.ItemByName(item.SourceName).IsNil() {
 			groupedItem.ParseGroupItem(
 				float64(item.SceneItemID),
 				float64(item.SceneItemIndex),

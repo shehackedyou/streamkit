@@ -120,15 +120,16 @@ func (sc *Scene) Transition() bool {
 // This does work because OBS doesn't allow duplicate names; not
 // even across scenes so technically could have all the items
 // together too.
-func (sc *Scene) Item(name string) *Item {
-	// TODO: Need to have a way to iterate over the items in the scene
-	for _, item := range sc.Items {
-		// TODO: Should we bother strings.ToLower() for each?
-		if item.Name == name {
-			return item
-		}
-	}
-	return nil
+func (sc *Scene) ItemByName(name string) *Item {
+	return sc.Items.Name(name)
+}
+
+func (sc *Scene) ItemById(id float64) *Item {
+	return sc.Items.Id(id)
+}
+
+func (sc *Scene) ItemByIndex(index float64) *Item {
+	return sc.Items.Index(index)
 }
 
 func (sc *Scene) ParseItem(id, index float64, iType, name string) *Item {

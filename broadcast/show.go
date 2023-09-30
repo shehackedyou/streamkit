@@ -45,10 +45,28 @@ func (sh *Show) Scene(name string) *Scene {
 
 // NOTE
 // Since items required to have a unique name even across scenes
-func (sh *Show) Item(name string) *Item {
+func (sh *Show) ItemByName(name string) *Item {
 	for _, scene := range sh.Scenes {
 		if item := scene.Items.Name(name); item != nil {
 			return item
+		}
+	}
+	return nil
+}
+
+func (sh *Show) ItemById(id float64) *Item {
+	for _, scene := range sh.Scenes {
+		if item := scene.Items.Id(id); item != nil {
+			return item
+		}
+	}
+	return nil
+}
+
+func (sh *Show) ItemByIndex(index float64) *Item {
+	for _, scene := range sh.Scenes {
+		if item := scene.Items.Index(index); item != nil {
+			return nil
 		}
 	}
 	return nil

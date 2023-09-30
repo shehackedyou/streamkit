@@ -48,7 +48,8 @@ func (is Items) Id(id float64) *Item {
 
 func (is Items) Name(name string) *Item {
 	for _, item := range is {
-		if item.Name == name {
+		if len(item.Name) == len(name) &&
+			item.Name == name {
 			return item
 		}
 		if item.TypeIs(GroupType) {
