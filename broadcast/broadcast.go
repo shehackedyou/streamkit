@@ -93,15 +93,17 @@ func (show *Show) ListSceneItems(scene *Scene) Items {
 	}
 
 	for _, item := range response.SceneItems {
-		parsedItem := scene.ParseItem(
-			float64(item.SceneItemID),
-			float64(item.SceneItemIndex),
-			item.SourceType,
-			item.SourceName,
-		)
+		if scene.Item(item.SourceName).IsNotNil() {
+			parsedItem := scene.ParseItem(
+				float64(item.SceneItemID),
+				float64(item.SceneItemIndex),
+				item.SourceType,
+				item.SourceName,
+			)
 
-		if parsedItem.TypeIs(GroupType) {
-			parsedItem.Group = show.GetGroupedItemList(scene, parsedItem)
+			if parsedItem.TypeIs(GroupType) {
+				parsedItem.Group = show.GetGroupedItemList(scene, parsedItem)
+			}
 		}
 	}
 	return scene.Items
