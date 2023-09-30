@@ -131,6 +131,6 @@ func (x *X11) ActiveWindow() *Window {
 
 		return window
 	} else {
-		return nil
+		return UndefinedWindow()
 	}
 }

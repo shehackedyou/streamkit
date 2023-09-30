@@ -77,16 +77,29 @@ func New() (toolkit *Toolkit) {
 		},
 	}
 
+	primaryScene := toolkit.Show.Scene("Primary")
+	browserItem := primaryScene.ItemByName("Research Browser")
 	toolkit.X11.OnChange[xserver.OnActiveWindow] = func() {
 		// Setup changing OBS stuff based on window changes
 		fmt.Printf("toolkit.X11.Window(%v)\n", toolkit.X11.Window)
-		if toolkit.X11.Window.IsType(xserver.Terminal) {
-			fmt.Printf("we got terminal type, so wait 3 seconds...\n")
+		switch toolkit.X11.Window.Type {
+		case xserver.Terminal:
+			fmt.Printf("we got TERMINAL type, so wait 3 seconds...\n")
+			time.Sleep(3 * time.Second)
 			fmt.Printf("  1. then we transition to Primary\n")
-			fmt.Printf("  2. then we hide research browser\n")
-			fmt.Printf("  3. then unhide terminal windows (just in case, maybe)\n")
+			primaryScene.Transition()
+			fmt.Printf("  2. then we HIDE research browser\n")
+			browserItem.Hide()
+		case xserver.Browser:
+			fmt.Printf("we got BROWSER type, so wait 3 seconds...\n")
+			time.Sleep(3 * time.Second)
+			fmt.Printf("  1. then we transition to Primary\n")
+			primaryScene.Transition()
+			fmt.Printf("  2. then we UNHIDE research browser\n")
+			browserItem.Unhide()
+		default:
+			fmt.Printf("we got a undefined type, thats cool, probably desktop...\n")
 		}
-
 	}
 
 	fmt.Printf("toolkit.X11: %v\n", toolkit.X11)
