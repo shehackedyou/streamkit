@@ -26,19 +26,19 @@ import (
 // This is one of the clever ways to add methods to struct from other module
 type OBS *goobs.Client
 
-func OpenShow(name string) *Show {
+func OpenShow(name, host string) *Show {
 	show := &Show{
-		Name:         DefaultConfig()["name"],
-		OBS:          Connect(DefaultConfig()["host"]),
+		Name:         name,
+		OBS:          Connect(host),
 		ProgramScene: EmptyScene(),
 		PreviewScene: EmptyScene(),
 		Scenes:       EmptyScenes(),
 	}
 	// TODO: Getting close to when we want to make this both return the scenes and
 	// possibly call it cache scenes
+	show.Scenes = show.GetSceneList()
 	show.ProgramScene = show.GetProgramScene()
 	show.PreviewScene = show.GetPreviewScene()
-	show.Scenes = show.GetSceneList()
 
 	return show
 }

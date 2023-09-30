@@ -105,6 +105,7 @@ func (sc *Scene) CacheItems() Items {
 }
 
 func (sc *Scene) Transition() bool {
+	fmt.Printf("sc.Show.ProgramScene(%v)\n", sc.Show.ProgramScene)
 	if sc.Show.ProgramScene.Name != sc.Name {
 		ok, err := sc.Show.SceneTransition(sc)
 		if err != nil {

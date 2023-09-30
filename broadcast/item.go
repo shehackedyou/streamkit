@@ -47,9 +47,16 @@ func (is Items) Id(id float64) *Item {
 }
 
 func (is Items) Name(name string) *Item {
-	for _, i := range is {
-		if i.Name == name {
-			return i
+	for _, item := range is {
+		if item.Name == name {
+			return item
+		}
+		if item.TypeIs(GroupType) {
+			for _, groupItem := range item.Group {
+				if groupItem.Name == name {
+					return groupItem
+				}
+			}
 		}
 	}
 	return nil

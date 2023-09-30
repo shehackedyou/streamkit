@@ -10,10 +10,10 @@ import (
 )
 
 func main() {
-	show := &broadcast.Show{
-		OBS:  broadcast.Connect(broadcast.DefaultConfig()["host"]),
-		Name: broadcast.DefaultConfig()["name"],
-	}
+	show := broadcast.OpenShow(
+		broadcast.DefaultConfig()["name"],
+		broadcast.DefaultConfig()["host"],
+	)
 
 	// TODO: Need to create a disconnect function
 	//defer client.Disconnect()
@@ -79,11 +79,8 @@ func main() {
 					},
 				),
 				Action: func(c *cli.Context) error {
-					scenes := show.GetSceneList()
-
-					fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
-					scenes.YAML(0)
-					fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
+					fmt.Printf("scenes parsed?(%v)\n", len(show.Scenes))
+					show.YAML(0)
 
 					return nil
 				},
@@ -94,9 +91,8 @@ func main() {
 				Description: "scene from name",
 				Flags: cli.Flags(
 					cli.Flag{
-						Name:  "name",
-						Alias: "n",
-						// TODO CLI FRAMEWORK - action fallthrough?
+						Name:        "name",
+						Alias:       "n",
 						Description: "Select the name of the scene",
 					},
 				),
@@ -123,11 +119,24 @@ func main() {
 						Action: func(c *cli.Context) error {
 							sceneName := c.Flag("name").String()
 							if len(sceneName) == 0 {
+								fmt.Printf("failed to provide scene name\n")
 								return fmt.Errorf("failed to provide scene name")
 							}
 
 							scene := show.Scene(sceneName)
-							fmt.Printf("scene(%v) with index(%v)\n", scene, scene.Index)
+							if scene == nil {
+								fmt.Printf("failed to find scene by name\n")
+								return fmt.Errorf("failed to find scene by name")
+							}
+							if scene.Transition() {
+								fmt.Printf("transitioned to scene(%v) with index(%v)\n",
+									scene.Name,
+									scene.Index,
+								)
+							} else {
+								fmt.Printf("failed to transition to scene\n")
+								return fmt.Errorf("failed to transition to scene")
+							}
 							return nil
 						},
 					},
@@ -142,12 +151,13 @@ func main() {
 							}
 
 							scene := show.Scene(sceneName)
+							if scene.IsNotNil() {
+								items := show.ListSceneItems(scene)
+								if items.IsNotEmpty() {
+									items.YAML(2)
+								}
+							}
 
-							items := show.ListSceneItems(scene)
-
-							items.YAML(2)
-
-							fmt.Printf("scene(%v) with index(%v)\n", scene, scene.Index)
 							return nil
 						},
 					},
@@ -164,9 +174,7 @@ func main() {
 					// Our problem is now that this will work but we need a before action
 					// to grab our scene on our subcommands
 					if scene != nil {
-						fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
-						fmt.Printf(" scene(%v) with name(%v)\n", scene, scene.Name)
-						fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
+						scene.YAML(0)
 					}
 
 					return nil
@@ -176,7 +184,6 @@ func main() {
 		Actions: cli.Actions{
 			OnStart: func(c *cli.Context) error {
 				c.CLI.Log("[onStart] action")
-				show.GetSceneList()
 				return nil
 			},
 			//Fallback: func(c *cli.Context) error {
@@ -185,15 +192,11 @@ func main() {
 			//},
 			OnExit: func(c *cli.Context) error {
 				c.CLI.Log("[onExit] action")
-				fmt.Printf("scenes parsed?(%v)\n", len(show.Scenes))
-				show.YAML(0)
 
 				return nil
 			},
 		},
 	})
-	fmt.Printf("initErrors(%v)\n", initErrors)
-	fmt.Printf("len(initErrors)(%v)\n", len(initErrors))
 	if len(initErrors) == 0 {
 		cmd.Parse(os.Args).Execute()
 	}

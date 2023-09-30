@@ -6,21 +6,14 @@ import (
 )
 
 type Show struct {
-	OBS OBS
-	//Id   int
-	// Season []*Season
-	// Episodes []*Episode
+	OBS    OBS
 	Name   string
 	Scenes Scenes
-	// TODO
-	// While the concept of creating managing or even automating scenes makes
-	// sense here but we have to decide if the show stores the OBS concept of the
-	// newly named ProgramScene (Active Scene) and Preview Scene (previously
-	// poorly named Studio Scene). Honestly it could fit in ~~both~~.
 
-	// But keep in mind we wanted the Show to be segregated from OBS. But the
-	// concept of the scene especially OUR abstraction and datatype could easily
-	// apply to a 2D engine if done correctly.
+	// Id       int
+	// Season   []*Season
+	// Episodes []*Episode
+
 	ProgramScene *Scene
 	PreviewScene *Scene
 }
@@ -49,12 +42,30 @@ func (sh *Show) Scene(name string) *Scene {
 	return nil
 }
 
+// NOTE
+// Since items required to have a unique name even across scenes
+func (sh *Show) Item(name string) *Item {
+	for _, scene := range sh.Scenes {
+		if item := scene.Items.Name(name); item != nil {
+			return item
+		}
+	}
+	return nil
+}
+
 func (sh *Show) ParseScene(index int, name string) *Scene {
 	// Validate name & index
 	var err error
 	if !(0 < len(name) && len(name) < 255) &&
 		!(0 <= index && index < 999) {
-		panic(err)
+		fmt.Printf("err(%v)", err)
+		return nil
+	}
+
+	// NOTE
+	// Prevent Duplicates
+	if scene := sh.Scene(name); scene != nil {
+		return scene
 	}
 
 	parsedScene := &Scene{
@@ -63,10 +74,6 @@ func (sh *Show) ParseScene(index int, name string) *Scene {
 		Name:  name,
 	}
 
-	// TODO
-	// We need to be checking if the scene has already been parsed
-	// otherwise we are going to have a ton of duplicates and if
-	// we catch it here we can avoid headaches
 	sh.Scenes = append(sh.Scenes, parsedScene)
 
 	return parsedScene
