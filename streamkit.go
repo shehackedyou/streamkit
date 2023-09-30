@@ -6,8 +6,6 @@ import (
 	"time"
 
 	broadcast "github.com/shehackedyou/streamkit/broadcast"
-	obs "github.com/shehackedyou/streamkit/broadcast/obs"
-	show "github.com/shehackedyou/streamkit/broadcast/show"
 	xserver "github.com/shehackedyou/streamkit/xserver"
 )
 
@@ -27,9 +25,9 @@ type Path string
 
 type Toolkit struct {
 	// NOTE: Short-poll rate [we will rewrite without short polling after]
-	Delay     time.Duration
-	Broadcast *obs.Broadcast
-	XWayland  *xserver.X11
+	Delay    time.Duration
+	Show     *broadcast.Show
+	XWayland *xserver.X11
 	// TODO: Our local copy of the show is entirely separate from obs.Client so we
 	// can change that out while maintaining logic and a data object
 	Config map[string]string
@@ -39,7 +37,7 @@ type Toolkit struct {
 func DefaultConfig() map[string]string {
 	return map[string]string{
 		"name":    "she hacked you",
-		"obs":     obs.DefaultConfig()["host"],
+		"obs":     broadcast.DefaultConfig()["host"],
 		"xserver": xserver.DefaultConfig()["host"],
 	}
 }
@@ -67,15 +65,10 @@ func New() (toolkit *Toolkit) {
 
 	toolkit = &Toolkit{
 		Config: toolkitConfig,
-		Show: &broadcast.Show{
-			Scenes: make([]*show.Scene, 0),
-		},
-		Broadcast: &obs.Broadcast{
-			Name: "she hacked you",
-			Client: &obs.Client{
-				WS: obs.Connect(toolkitConfig["obs"]),
-			},
-		},
+		Show: broadcast.OpenShow(
+			toolkitConfig["name"],
+			toolkitConfig["obs"],
+		),
 		XWayland: &xserver.X11{
 			Client: xserver.Connect(toolkitConfig["xserver"]),
 		},
