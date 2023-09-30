@@ -31,6 +31,15 @@ func (scs Scenes) Last() *Scene {
 	return nil
 }
 
+func (scs Scenes) Index(index int) *Scene {
+	for _, sc := range scs {
+		if sc.Index == index {
+			return sc
+		}
+	}
+	return nil
+}
+
 func (scs Scenes) Scene(name string) *Scene {
 	for _, sc := range scs {
 		if sc.Name == name {
@@ -92,8 +101,18 @@ func (sc *Scene) HasName(name string) bool {
 }
 
 func (sc *Scene) CacheItems() Items {
+	return sc.Show.ListSceneItems(sc)
+}
 
-	return EmptyItems()
+func (sc *Scene) Transition() bool {
+	if sc.Show.ProgramScene.Name != sc.Name {
+		ok, err := sc.Show.SceneTransition(sc)
+		if err != nil {
+			return false
+		}
+		return ok
+	}
+	return false
 }
 
 // NOTE
@@ -134,19 +153,10 @@ func (sc *Scene) ParseItem(id, index float64, iType, name string) *Item {
 		Type:  MarshalSourceType(iType),
 	}
 
-	// TODO
-	// We need to handle parsing of grouped item
-	// like if iType is group then parse sub-items here
 	if parsedItem.TypeIs(GroupType) {
 		parsedItem.Group = sc.Show.GetGroupedItemList(sc, parsedItem)
-
 	}
 
-	// TODO
-	// Need to prevent duplicates here, so we save ourselves from
-	// tedious headache causing problems; simple as searching before
-	// doing this append; or switching to a linked-list which may
-	// make more sense and most people dont realize is in the stdlib
 	sc.Items = append(sc.Items, parsedItem)
 
 	return parsedItem

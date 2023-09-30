@@ -60,7 +60,6 @@ func main() {
 						Description: "transition obs program scene",
 						Action: func(c *cli.Context) error {
 							fmt.Printf("obs.ListScenes() caching scenes locally...\n")
-							show.GetSceneList()
 
 							endScene := show.Scenes.First()
 							fmt.Printf("obs.Show.Scenes.First() => endScene(%v)\n", endScene)
@@ -177,6 +176,7 @@ func main() {
 		Actions: cli.Actions{
 			OnStart: func(c *cli.Context) error {
 				c.CLI.Log("[onStart] action")
+				show.GetSceneList()
 				return nil
 			},
 			//Fallback: func(c *cli.Context) error {
@@ -184,11 +184,9 @@ func main() {
 			//	return nil
 			//},
 			OnExit: func(c *cli.Context) error {
-				c.CLI.Log("onExit action")
-
+				c.CLI.Log("[onExit] action")
 				fmt.Printf("scenes parsed?(%v)\n", len(show.Scenes))
-				fmt.Printf("now lets iterate over OUR type of scene...\n\n")
-				//obs.Show.YAML(0)
+				show.YAML(0)
 
 				return nil
 			},

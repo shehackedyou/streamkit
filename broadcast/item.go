@@ -14,6 +14,65 @@ func EmptyItems() Items { return make([]*Item, 0) }
 func (is Items) IsEmpty() bool    { return len(is) == 0 }
 func (is Items) IsNotEmpty() bool { return !is.IsEmpty() }
 
+func (is Items) First() *Item {
+	if is.IsNotEmpty() {
+		return is[0]
+	}
+	return nil
+}
+
+func (is Items) Last() *Item {
+	if is.IsNotEmpty() {
+		return is[len(is)-1]
+	}
+	return nil
+}
+
+func (is Items) Index(index float64) *Item {
+	for _, i := range is {
+		if i.Index == index {
+			return i
+		}
+	}
+	return nil
+}
+
+func (is Items) Id(id float64) *Item {
+	for _, i := range is {
+		if i.Id == id {
+			return i
+		}
+	}
+	return nil
+}
+
+func (is Items) Name(name string) *Item {
+	for _, i := range is {
+		if i.Name == name {
+			return i
+		}
+	}
+	return nil
+}
+
+func (is Items) Groups() (groups Items) {
+	for _, i := range is {
+		if i.Type == GroupType {
+			groups = append(groups, i)
+		}
+	}
+	return groups
+}
+
+func (is Items) Parent(item *Item) (children Items) {
+	for _, i := range is {
+		if i.Parent.Id == item.Id {
+			children = append(children, i)
+		}
+	}
+	return children
+}
+
 func (is Items) YAML(spaces int) {
 	prefix := strings.Repeat(" ", spaces)
 	fmt.Printf("%sitems:\n", prefix)
@@ -23,29 +82,52 @@ func (is Items) YAML(spaces int) {
 }
 
 type Item struct {
-	Scene *Scene
+	Scene  *Scene
+	Parent *Item
 
 	Id    float64
 	Index float64
 	Name  string
 	Type  SourceType
-
-	Parent *Item
-	Group  Items
-
-	// TODO
-	// Going to need a way to move up to show and scene without
-	// creating a loop of imports
+	Group Items
 }
 
 func EmptyItem() *Item {
 	return &Item{
-		Scene: nil,
-		Id:    -1,
-		Index: -1,
-		Name:  "",
-		Type:  UndefinedType,
+		Scene:  nil,
+		Parent: nil,
+		Id:     -1,
+		Index:  -1,
+		Name:   "",
+		Type:   UndefinedType,
+		Group:  EmptyItems(),
 	}
+}
+
+func (i *Item) ParseGroupItem(id, index float64, iType, name string) *Item {
+	if !(0 < len(name) && len(name) < 255) &&
+		!(0 < len(iType) && len(iType) < 128) &&
+		!(0 <= index && index < 999) &&
+		!(0 <= id && id < 999) ||
+		i.Type != GroupType {
+		// TODO
+		// If we are failing to parse an item we have big problems;
+		// especially after all this validation
+		return i
+	}
+
+	parsedItem := &Item{
+		Scene:  i.Scene,
+		Parent: i,
+		Id:     id,
+		Index:  index,
+		Name:   name,
+		Type:   MarshalSourceType(iType),
+	}
+
+	i.Group = append(i.Group, parsedItem)
+
+	return i
 }
 
 func (i Item) Hide() bool {

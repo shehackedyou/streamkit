@@ -70,26 +70,19 @@ func Connect(host string) OBS {
 //  2. unhide/hide items within scenes
 //
 // Thats what is all remaining needed for most basic producerbot
-func (show *Show) GetSceneList() (scenes Scenes) {
+func (show *Show) GetSceneList() Scenes {
 	response, err := show.OBS.Scenes.GetSceneList()
 	if err != nil {
 		panic(err)
 	}
 	for _, scene := range response.Scenes {
-		fmt.Printf("%2d %s\n", scene.SceneIndex, scene.SceneName)
 		scene := show.ParseScene(scene.SceneIndex, scene.SceneName)
-		scenes = append(scenes, scene)
-
 		scene.Items = show.ListSceneItems(scene)
 	}
-	return scenes
+	return show.Scenes
 }
 
-func (show *Show) ListSceneItems(scene *Scene) (items Items) {
-	// TODO
-	// This type of shit where we are interacting with sceneitems or
-	// typedefs we need to push that into obs but for now lets just
-	// get working shit
+func (show *Show) ListSceneItems(scene *Scene) Items {
 	params := &sceneitems.GetSceneItemListParams{
 		SceneName: scene.Name,
 	}
@@ -99,15 +92,6 @@ func (show *Show) ListSceneItems(scene *Scene) (items Items) {
 		panic(err)
 	}
 
-	// TODO
-	// We are absolutely dropping this shit, we are going to
-	// just have them all be items underneath the scene, then
-	// we are going to group the items in a group by using an
-	// attribute. OR we just recursively nest them but itd be
-	// most likely easier to work with if we just have them all
-	// be in scene.Items then have Group("name").Items and just
-	// hide the group item
-	fmt.Printf("items for scene len(%v)\n ", len(response.SceneItems))
 	for _, item := range response.SceneItems {
 		parsedItem := scene.ParseItem(
 			float64(item.SceneItemID),
@@ -116,26 +100,20 @@ func (show *Show) ListSceneItems(scene *Scene) (items Items) {
 			item.SourceName,
 		)
 
-		// TODO
-		// Eventually sort by type, ones that are scene_type
-		// are better called "groups" but it doesn't even nest
-		// more than 1 level but we should be storing it but
-		// start with it
 		if parsedItem.TypeIs(GroupType) {
 			parsedItem.Group = show.GetGroupedItemList(scene, parsedItem)
 		}
-		items = append(items, parsedItem)
 	}
-	return items
+	return scene.Items
 }
 
 // TODO: hrmm this might need to be on scene or we have to pass the scene object
 // through if we want to parse it
 // TODO: this one is troublesome because it has to use scene which means we
 // should be moving these over to the actual objects
-func (show *Show) GetGroupedItemList(scene *Scene, groupItem *Item) (items Items) {
+func (show *Show) GetGroupedItemList(scene *Scene, groupedItem *Item) Items {
 	params := &sceneitems.GetGroupSceneItemListParams{
-		SceneName: groupItem.Name,
+		SceneName: groupedItem.Name,
 	}
 
 	response, err := show.OBS.SceneItems.GetGroupSceneItemList(params)
@@ -144,17 +122,14 @@ func (show *Show) GetGroupedItemList(scene *Scene, groupItem *Item) (items Items
 	}
 
 	for _, item := range response.SceneItems {
-		parsedGroupedItem := scene.ParseItem(
+		groupedItem.ParseGroupItem(
 			float64(item.SceneItemID),
 			float64(item.SceneItemIndex),
 			item.SourceType,
 			item.SourceName,
 		)
-
-		parsedGroupedItem.Parent = groupItem
-		items = append(items, parsedGroupedItem)
 	}
-	return items
+	return groupedItem.Group
 }
 
 func (show *Show) GetSceneItemId(sceneName string, offset float64, item string) float64 {
