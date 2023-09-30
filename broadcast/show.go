@@ -3,16 +3,15 @@ package broadcast
 import (
 	"fmt"
 	"strings"
-
-	show "github.com/shehackedyou/streamkit/broadcast/show"
 )
 
 type Show struct {
+	OBS OBS
 	//Id   int
 	// Season []*Season
 	// Episodes []*Episode
 	Name   string
-	Scenes show.Scenes
+	Scenes Scenes
 	// TODO
 	// While the concept of creating managing or even automating scenes makes
 	// sense here but we have to decide if the show stores the OBS concept of the
@@ -22,23 +21,8 @@ type Show struct {
 	// But keep in mind we wanted the Show to be segregated from OBS. But the
 	// concept of the scene especially OUR abstraction and datatype could easily
 	// apply to a 2D engine if done correctly.
-	ProgramScene *show.Scene
-	PreviewScene *show.Scene
-}
-
-func OpenShow(name string) *Show {
-	show := &Show{
-		Name:         name,
-		ProgramScene: EmptyScene(),
-		PreviewScene: EmptyScene(),
-		Scenes:       make([]*show.Scene, 0),
-	}
-
-	return show
-}
-
-func EmptyScene() *show.Scene {
-	return &show.Scene{Name: ""}
+	ProgramScene *Scene
+	PreviewScene *Scene
 }
 
 func (sh Show) YAML(spaces int) {
@@ -56,7 +40,7 @@ func (sh Show) YAML(spaces int) {
 	sh.Scenes.YAML(spaces + 4)
 }
 
-func (sh *Show) Scene(name string) *show.Scene {
+func (sh *Show) Scene(name string) *Scene {
 	for _, scene := range sh.Scenes {
 		if scene.Name == name {
 			return scene
@@ -65,7 +49,7 @@ func (sh *Show) Scene(name string) *show.Scene {
 	return nil
 }
 
-func (sh *Show) ParseScene(index int, name string) *show.Scene {
+func (sh *Show) ParseScene(index int, name string) *Scene {
 	// Validate name & index
 	var err error
 	if !(0 < len(name) && len(name) < 255) &&
@@ -73,7 +57,8 @@ func (sh *Show) ParseScene(index int, name string) *show.Scene {
 		panic(err)
 	}
 
-	parsedScene := &show.Scene{
+	parsedScene := &Scene{
+		Show:  sh,
 		Index: index,
 		Name:  name,
 	}

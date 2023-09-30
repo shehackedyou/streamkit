@@ -5,10 +5,6 @@ go 1.15
 replace (
 	github.com/multiverse-os/cli => /home/user/go/src/github.com/multiverse-os/cli
 	github.com/multiverse-os/cli/terminal/ansi => github.com/multiverse-os/ansi v0.0.0-20230212053502-2711fc61f14d
-	github.com/shehackedyou/streamkit/broadcast/obs => ./obs
-	github.com/shehackedyou/streamkit/broadcast/show => ./show
-	github.com/shehackedyou/streamkit/broadcast/show/scene => ./show/scene
-
 )
 
 require (

@@ -1,16 +1,16 @@
-package show
+package broadcast
 
 import (
 	"fmt"
 	"strings"
-
-	scene "github.com/shehackedyou/streamkit/broadcast/show/scene"
 )
 
 // NOTE
 // This is our collection type for creating methods based on a collection
 // of scenes within a show
 type Scenes []*Scene
+
+func EmptyScenes() Scenes { return make([]*Scene, 0) }
 
 func (scs Scenes) IsEmpty() bool    { return len(scs) == 0 }
 func (scs Scenes) IsNotEmpty() bool { return !scs.IsEmpty() }
@@ -56,9 +56,19 @@ func (scs Scenes) YAML(spaces int) {
 }
 
 type Scene struct {
+	Show *Show
+
 	Index int
 	Name  string
-	Items scene.Items
+	Items Items
+}
+
+func EmptyScene() *Scene {
+	return &Scene{
+		Name:  "",
+		Index: -1,
+		Items: EmptyItems(),
+	}
 }
 
 // TODO: These make more sense as we build in more validation on any and every
@@ -81,11 +91,16 @@ func (sc *Scene) HasName(name string) bool {
 	return (sc != nil || len(sc.Name) != len(name) || len(name) == 0)
 }
 
+func (sc *Scene) CacheItems() Items {
+
+	return EmptyItems()
+}
+
 // NOTE
 // This does work because OBS doesn't allow duplicate names; not
 // even across scenes so technically could have all the items
 // together too.
-func (sc *Scene) Item(name string) *scene.Item {
+func (sc *Scene) Item(name string) *Item {
 	// TODO: Need to have a way to iterate over the items in the scene
 	for _, item := range sc.Items {
 		// TODO: Should we bother strings.ToLower() for each?
@@ -96,7 +111,7 @@ func (sc *Scene) Item(name string) *scene.Item {
 	return nil
 }
 
-func (sc *Scene) ParseItem(id, index int, iType, name string) *scene.Item {
+func (sc *Scene) ParseItem(id, index float64, iType, name string) *Item {
 	var err error
 	// NOTE
 	// Validate for each of the types so we only generate valid objects
@@ -105,16 +120,26 @@ func (sc *Scene) ParseItem(id, index int, iType, name string) *scene.Item {
 		!(0 < len(iType) && len(iType) < 128) &&
 		!(0 <= index && index < 999) &&
 		!(0 <= id && id < 999) {
-		// TODO: If we are failing to parse an item we have big problems;
+		// TODO
+		// If we are failing to parse an item we have big problems;
 		// especially after all this validation
 		panic(err)
 	}
 
-	parsedItem := &scene.Item{
+	parsedItem := &Item{
+		Scene: sc,
 		Id:    id,
 		Index: index,
 		Name:  name,
-		Type:  scene.MarshalSourceType(iType),
+		Type:  MarshalSourceType(iType),
+	}
+
+	// TODO
+	// We need to handle parsing of grouped item
+	// like if iType is group then parse sub-items here
+	if parsedItem.TypeIs(GroupType) {
+		parsedItem.Group = sc.Show.GetGroupedItemList(sc, parsedItem)
+
 	}
 
 	// TODO

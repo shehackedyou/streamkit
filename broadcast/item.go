@@ -1,4 +1,4 @@
-package scene
+package broadcast
 
 import (
 	"fmt"
@@ -9,22 +9,24 @@ import (
 // Collection functions
 type Items []*Item
 
-func (its Items) IsEmpty() bool    { return len(its) == 0 }
-func (its Items) IsNotEmpty() bool { return !its.IsEmpty() }
-
 func EmptyItems() Items { return make([]*Item, 0) }
 
-func (its Items) YAML(spaces int) {
+func (is Items) IsEmpty() bool    { return len(is) == 0 }
+func (is Items) IsNotEmpty() bool { return !is.IsEmpty() }
+
+func (is Items) YAML(spaces int) {
 	prefix := strings.Repeat(" ", spaces)
 	fmt.Printf("%sitems:\n", prefix)
-	for _, item := range its {
+	for _, item := range is {
 		item.YAML(spaces + 2)
 	}
 }
 
 type Item struct {
-	Id    int
-	Index int
+	Scene *Scene
+
+	Id    float64
+	Index float64
 	Name  string
 	Type  SourceType
 
@@ -36,19 +38,41 @@ type Item struct {
 	// creating a loop of imports
 }
 
-func (i Item) IsUndefined() bool    { return i.Type == UndefinedType }
-func (i Item) IsNotUndefined() bool { return !i.IsUndefined() }
-func (i *Item) IsNil() bool         { return i == nil }
-func (i *Item) IsNotNil() bool      { return !i.IsNil() }
-
 func EmptyItem() *Item {
 	return &Item{
+		Scene: nil,
 		Id:    -1,
 		Index: -1,
 		Name:  "",
 		Type:  UndefinedType,
 	}
 }
+
+func (i Item) Hide() bool {
+	return i.Scene.Show.HideItem(i.Scene.Name, i.Id)
+}
+
+func (i Item) Unhide() bool {
+	return i.Scene.Show.UnhideItem(i.Scene.Name, i.Id)
+}
+
+func (i Item) Lock() bool {
+	return i.Scene.Show.LockItem(i.Scene.Name, i.Id)
+}
+
+func (i Item) Unlock() bool {
+	return i.Scene.Show.UnlockItem(i.Scene.Name, i.Id)
+}
+
+func (i Item) IsGroup() bool        { return i.Type == GroupType }
+func (i Item) IsUndefined() bool    { return i.Type == UndefinedType }
+func (i Item) IsNotUndefined() bool { return !i.IsUndefined() }
+func (i *Item) IsNil() bool         { return i == nil }
+func (i *Item) IsNotNil() bool      { return !i.IsNil() }
+
+// Aliasing
+func (i Item) IsFolder() bool { return i.IsGroup() }
+func (i Item) IsEmpty() bool  { return i.IsUndefined() }
 
 func (i *Item) YAML(spaces int) {
 	prefix := strings.Repeat(" ", spaces)

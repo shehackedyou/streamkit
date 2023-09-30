@@ -10,9 +10,9 @@ import (
 )
 
 func main() {
-	obs := &broadcast.OBS{
-		Broadcast: broadcast.Connect(broadcast.DefaultConfig()["host"]),
-		Show:      broadcast.OpenShow("she hacked you"),
+	show := &broadcast.Show{
+		OBS:  broadcast.Connect(broadcast.DefaultConfig()["host"]),
+		Name: broadcast.DefaultConfig()["name"],
 	}
 
 	// TODO: Need to create a disconnect function
@@ -33,9 +33,9 @@ func main() {
 						Alias:       "q",
 						Description: "list obs preview scene",
 						Action: func(c *cli.Context) error {
-							obs.ListScenes()
+							show.GetSceneList()
 
-							previewScene := obs.GetPreviewScene()
+							previewScene := show.GetPreviewScene()
 							fmt.Printf("obs.Show.Scenes.GetPreviewScene(%v)\n", previewScene)
 
 							return nil
@@ -46,9 +46,9 @@ func main() {
 						Alias:       "p",
 						Description: "list obs program scene",
 						Action: func(c *cli.Context) error {
-							obs.ListScenes()
+							show.GetSceneList()
 
-							programScene := obs.GetProgramScene()
+							programScene := show.GetProgramScene()
 							fmt.Printf("obs.Show.Scenes.GetProgramScene(%v)\n", programScene)
 
 							return nil
@@ -60,15 +60,15 @@ func main() {
 						Description: "transition obs program scene",
 						Action: func(c *cli.Context) error {
 							fmt.Printf("obs.ListScenes() caching scenes locally...\n")
-							obs.ListScenes()
+							show.GetSceneList()
 
-							endScene := obs.Show.Scenes.First()
+							endScene := show.Scenes.First()
 							fmt.Printf("obs.Show.Scenes.First() => endScene(%v)\n", endScene)
 
-							primaryScene := obs.Show.Scenes.Last()
+							primaryScene := show.Scenes.Last()
 							fmt.Printf("obs.Show.Scenes.Last() => primaryScene(%v)\n", primaryScene)
 
-							ok, err := obs.SceneTransition(primaryScene)
+							ok, err := show.SceneTransition(primaryScene)
 							if err != nil {
 								panic(err)
 							}
@@ -80,7 +80,7 @@ func main() {
 					},
 				),
 				Action: func(c *cli.Context) error {
-					obs.ListScenes()
+					show.GetSceneList()
 
 					fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
 					fmt.Printf(" this is what runs scenes and gives us a list\n")
@@ -103,41 +103,52 @@ func main() {
 				),
 				Subcommands: cli.Commands(
 					cli.Command{
-						Name:        "id",
+						Name:        "index",
 						Alias:       "i",
-						Description: "obtain item id from scene",
+						Description: "obtain item index from scene",
 						Action: func(c *cli.Context) error {
-							c.CLI.Log("test")
-							fmt.Printf("how many flags(%v) and object flags(%v)\n", len(c.Flags), c.Flags)
 							sceneName := c.Flag("name").String()
 							if len(sceneName) == 0 {
-								fmt.Printf("error: failed to provide scene name\n")
 								return fmt.Errorf("failed to provide scene name")
 							}
 
-							scene := obs.Show.Scene(sceneName)
-							fmt.Printf("scene(%v) with name(%v)\n", scene, sceneName)
+							scene := show.Scene(sceneName)
+							fmt.Printf("scene(%v) with index(%v)\n", scene, scene.Index)
+							return nil
+						},
+					},
+					cli.Command{
+						Name:        "transition",
+						Alias:       "t",
+						Description: "transition to scene",
+						Action: func(c *cli.Context) error {
+							sceneName := c.Flag("name").String()
+							if len(sceneName) == 0 {
+								return fmt.Errorf("failed to provide scene name")
+							}
 
-							fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
-
+							scene := show.Scene(sceneName)
+							fmt.Printf("scene(%v) with index(%v)\n", scene, scene.Index)
 							return nil
 						},
 					},
 				),
 				Action: func(c *cli.Context) error {
-					c.CLI.Log("action of scene")
+					c.CLI.Log(" action of scene")
 					sceneName := c.Flag("name").String()
 					if len(sceneName) == 0 {
 						return fmt.Errorf("failed to provide scene name")
 					}
 
-					scene := obs.Show.Scene(sceneName)
+					scene := show.Scene(sceneName)
 					// TODO
 					// Our problem is now that this will work but we need a before action
 					// to grab our scene on our subcommands
-					fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
-					fmt.Printf("scene(%v) with name(%v)\n", scene, sceneName)
-					fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
+					if scene != nil {
+						fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
+						fmt.Printf(" scene(%v) with name(%v)\n", scene, scene.Name)
+						fmt.Printf("xxxxxxxxxxxxxxxxxx\n")
+					}
 
 					return nil
 				},
@@ -145,25 +156,8 @@ func main() {
 		),
 		Actions: cli.Actions{
 			OnStart: func(c *cli.Context) error {
-				c.CLI.Log("onStart action")
-
-				obs.ListScenes()
-
-				fmt.Printf("how many flags (%v)\n", len(c.Flags))
-
-				fmt.Printf("first flag? (%v)\n", c.Flags.First())
-				fmt.Printf("last flag? (%v)\n", c.Flags.Last())
-
-				for index, fl := range c.Flags {
-					fmt.Printf("flag@index(%v)=value(%v)\n", index, fl)
-				}
-
-				sceneName := c.Flag("name").String()
-
-				fmt.Printf("is the flag available this early?(%v)\n", sceneName)
-				fmt.Printf("ran obs.ListScenes() to cache them\n")
-
-				c.CLI.Log("broadcast ", fmt.Sprintf("%v", obs))
+				c.CLI.Log("[onStart] action")
+				show.GetSceneList()
 				return nil
 			},
 			//Fallback: func(c *cli.Context) error {
@@ -173,7 +167,7 @@ func main() {
 			OnExit: func(c *cli.Context) error {
 				c.CLI.Log("onExit action")
 
-				fmt.Printf("scenes parsed?(%v)\n", len(obs.Show.Scenes))
+				fmt.Printf("scenes parsed?(%v)\n", len(show.Scenes))
 				fmt.Printf("now lets iterate over OUR type of scene...\n\n")
 				//obs.Show.YAML(0)
 
@@ -181,7 +175,8 @@ func main() {
 			},
 		},
 	})
-
+	fmt.Printf("initErrors(%v)\n", initErrors)
+	fmt.Printf("len(initErrors)(%v)\n", len(initErrors))
 	if len(initErrors) == 0 {
 		cmd.Parse(os.Args).Execute()
 	}

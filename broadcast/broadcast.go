@@ -3,9 +3,7 @@ package broadcast
 import (
 	"fmt"
 
-	obs "github.com/shehackedyou/streamkit/broadcast/obs"
-	show "github.com/shehackedyou/streamkit/broadcast/show"
-	scene "github.com/shehackedyou/streamkit/broadcast/show/scene"
+	goobs "github.com/andreykaipov/goobs"
 
 	sceneitems "github.com/andreykaipov/goobs/api/requests/sceneitems"
 	scenes "github.com/andreykaipov/goobs/api/requests/scenes"
@@ -24,36 +22,40 @@ import (
 // WITH THAT we can finally go back to streamkit and piece the two components
 // together from broadcast and xserver and get our producerbot 100
 
-// TODO: obs folder is primarily legacy working obs interaction
-type OBS struct {
-	*obs.Broadcast
-	Show *Show
-}
+// NOTE
+// This is one of the clever ways to add methods to struct from other module
+type OBS *goobs.Client
 
-func New() *OBS {
-	obs := &OBS{
-		Broadcast: Connect(DefaultConfig()["host"]),
-		Show:      OpenShow(DefaultConfig()["name"]),
+func OpenShow(name string) *Show {
+	show := &Show{
+		Name:         DefaultConfig()["name"],
+		OBS:          Connect(DefaultConfig()["host"]),
+		ProgramScene: EmptyScene(),
+		PreviewScene: EmptyScene(),
+		Scenes:       EmptyScenes(),
 	}
 	// TODO: Getting close to when we want to make this both return the scenes and
 	// possibly call it cache scenes
-	obs.ListScenes()
-	obs.Show.ProgramScene = obs.GetProgramScene()
-	obs.Show.PreviewScene = obs.GetPreviewScene()
+	show.ProgramScene = show.GetProgramScene()
+	show.PreviewScene = show.GetPreviewScene()
+	show.Scenes = show.GetSceneList()
 
-	return obs
+	return show
 }
 
 func DefaultConfig() map[string]string {
-	defaultConfig := obs.DefaultConfig()
-	defaultConfig["name"] = "she hacked you"
-	return defaultConfig
+	return map[string]string{
+		"name": "she hacked you",
+		"host": "10.100.100.1:4444",
+	}
 }
 
-func Connect(host string) *obs.Broadcast {
-	return &obs.Broadcast{
-		Client: obs.Connect(host),
+func Connect(host string) OBS {
+	client, err := goobs.New(host)
+	if err != nil {
+		panic(err)
 	}
+	return client
 }
 
 // TODO
@@ -68,29 +70,31 @@ func Connect(host string) *obs.Broadcast {
 //  2. unhide/hide items within scenes
 //
 // Thats what is all remaining needed for most basic producerbot
-func (o *OBS) ListScenes() {
-	response, err := o.Client.Scenes.GetSceneList()
+func (show *Show) GetSceneList() (scenes Scenes) {
+	response, err := show.OBS.Scenes.GetSceneList()
 	if err != nil {
 		panic(err)
 	}
-	for _, s := range response.Scenes {
-		fmt.Printf("%2d %s\n", s.SceneIndex, s.SceneName)
-		parsedScene := o.Show.ParseScene(s.SceneIndex, s.SceneName)
+	for _, scene := range response.Scenes {
+		fmt.Printf("%2d %s\n", scene.SceneIndex, scene.SceneName)
+		parsedScene := show.ParseScene(scene.SceneIndex, scene.SceneName)
+		scenes = append(scenes, parsedScene)
 
-		o.ListSceneItems(parsedScene)
+		show.ListSceneItems(parsedScene)
 	}
+	return scenes
 }
 
-func (o *OBS) ListSceneItems(parsedScene *show.Scene) {
+func (show *Show) ListSceneItems(scene *Scene) (items Items) {
 	// TODO
 	// This type of shit where we are interacting with sceneitems or
 	// typedefs we need to push that into obs but for now lets just
 	// get working shit
 	params := &sceneitems.GetSceneItemListParams{
-		SceneName: parsedScene.Name,
+		SceneName: scene.Name,
 	}
 
-	response, err := o.Client.SceneItems.GetSceneItemList(params)
+	response, err := show.OBS.SceneItems.GetSceneItemList(params)
 	if err != nil {
 		panic(err)
 	}
@@ -105,9 +109,9 @@ func (o *OBS) ListSceneItems(parsedScene *show.Scene) {
 	// hide the group item
 	fmt.Printf("items for scene len(%v)\n ", len(response.SceneItems))
 	for _, item := range response.SceneItems {
-		parsedItem := parsedScene.ParseItem(
-			item.SceneItemID,
-			item.SceneItemIndex,
+		parsedItem := scene.ParseItem(
+			float64(item.SceneItemID),
+			float64(item.SceneItemIndex),
 			item.SourceType,
 			item.SourceName,
 		)
@@ -117,62 +121,153 @@ func (o *OBS) ListSceneItems(parsedScene *show.Scene) {
 		// are better called "groups" but it doesn't even nest
 		// more than 1 level but we should be storing it but
 		// start with it
-		if parsedItem.TypeIs(scene.GroupType) {
-			groupedItems := o.SceneGroupList(parsedScene, parsedItem)
-
-			parsedItem.Group = groupedItems
+		if parsedItem.TypeIs(GroupType) {
+			parsedItem.Group = show.GetGroupedItemList(scene, parsedItem)
 		}
-
+		items = append(items, parsedItem)
 	}
+	return items
 }
 
 // TODO: hrmm this might need to be on scene or we have to pass the scene object
 // through if we want to parse it
-func (o *OBS) SceneGroupList(
-	parsedScene *show.Scene,
-	itemGroup *scene.Item,
-) (groupedItems scene.Items) {
+// TODO: this one is troublesome because it has to use scene which means we
+// should be moving these over to the actual objects
+func (show *Show) GetGroupedItemList(scene *Scene, groupItem *Item) (items Items) {
 	params := &sceneitems.GetGroupSceneItemListParams{
-		SceneName: itemGroup.Name,
+		SceneName: groupItem.Name,
 	}
 
-	response, err := o.Client.SceneItems.GetGroupSceneItemList(params)
+	response, err := show.OBS.SceneItems.GetGroupSceneItemList(params)
 	if err != nil {
 		panic(err)
 	}
 
 	for _, item := range response.SceneItems {
-		parsedGroupedItem := parsedScene.ParseItem(
-			item.SceneItemID,
-			item.SceneItemIndex,
+		parsedGroupedItem := scene.ParseItem(
+			float64(item.SceneItemID),
+			float64(item.SceneItemIndex),
 			item.SourceType,
 			item.SourceName,
 		)
 
-		parsedGroupedItem.Parent = itemGroup
-		groupedItems = append(groupedItems, parsedGroupedItem)
+		parsedGroupedItem.Parent = groupItem
+		items = append(items, parsedGroupedItem)
 	}
-	return groupedItems
+	return items
 }
 
-func (o *OBS) GetSceneItemId(sc *show.Scene, offset float64, it string) float64 {
+func (show *Show) GetSceneItemId(sceneName string, offset float64, item string) float64 {
 	params := &sceneitems.GetSceneItemIdParams{
-		SceneName:    sc.Name,
+		SceneName:    sceneName,
 		SearchOffset: offset,
-		SourceName:   it,
+		SourceName:   item,
 	}
 
-	response, err := o.Client.SceneItems.GetSceneItemId(params)
+	response, err := show.OBS.SceneItems.GetSceneItemId(params)
 	if err != nil {
-		return 0
+		return -1
 	}
 
 	return response.SceneItemId
 }
 
-func (o *OBS) HideItem() *show.Scene {
+func (show *Show) IsItemLocked(sceneName string, itemId float64) bool {
+	params := &sceneitems.GetSceneItemLockedParams{
+		SceneItemId: itemId,
+		SceneName:   sceneName,
+	}
 
-	return nil
+	response, err := show.OBS.SceneItems.GetSceneItemLocked(params)
+	if err != nil {
+		fmt.Printf("err(%v)\n", err)
+		return false
+	}
+
+	return response.SceneItemLocked
+}
+
+func (show *Show) IsItemVisible(sceneName string, itemId float64) bool {
+	params := &sceneitems.GetSceneItemEnabledParams{
+		SceneItemId: itemId,
+		SceneName:   sceneName,
+	}
+
+	response, err := show.OBS.SceneItems.GetSceneItemEnabled(params)
+	if err != nil {
+		fmt.Printf("err(%v)\n", err)
+		return false
+	}
+
+	return response.SceneItemEnabled
+}
+
+func (show *Show) SetItemVisibility(sceneName string, itemId float64, visible bool) bool {
+	params := &sceneitems.SetSceneItemEnabledParams{
+		SceneItemEnabled: &visible,
+		SceneItemId:      itemId,
+		SceneName:        sceneName,
+	}
+
+	// NOTE Response is literally empty, so dumb
+	_, err := show.OBS.SceneItems.SetSceneItemEnabled(params)
+	return err != nil
+}
+
+func (show *Show) HideItem(sceneName string, itemId float64) bool {
+	return show.SetItemVisibility(sceneName, itemId, false)
+}
+
+func (show *Show) UnhideItem(sceneName string, itemId float64) bool {
+	return show.SetItemVisibility(sceneName, itemId, true)
+}
+
+func (show *Show) SetItemLocked(sceneName string, itemId float64, locked bool) bool {
+	params := &sceneitems.SetSceneItemLockedParams{
+		SceneName:       sceneName,
+		SceneItemId:     itemId,
+		SceneItemLocked: &locked,
+	}
+
+	_, err := show.OBS.SceneItems.SetSceneItemLocked(params)
+	return err != nil
+}
+
+func (show *Show) LockItem(sceneName string, itemId float64) bool {
+	return show.SetItemLocked(sceneName, itemId, true)
+}
+
+func (show *Show) UnlockItem(sceneName string, itemId float64) bool {
+	return show.SetItemLocked(sceneName, itemId, false)
+}
+
+func (show *Show) GetSceneItemIndex(sceneName string, itemId float64) float64 {
+	params := &sceneitems.GetSceneItemIndexParams{
+		SceneName:   sceneName,
+		SceneItemId: itemId,
+	}
+
+	response, err := show.OBS.SceneItems.GetSceneItemIndex(params)
+	if err != nil {
+		return -1
+	}
+
+	return response.SceneItemIndex
+}
+
+func (show *Show) SetSceneItemIndex(
+	sceneName string,
+	itemId float64,
+	itemIndex float64,
+) bool {
+	params := &sceneitems.SetSceneItemIndexParams{
+		SceneName:      sceneName,
+		SceneItemId:    itemId,
+		SceneItemIndex: itemIndex,
+	}
+
+	_, err := show.OBS.SceneItems.SetSceneItemIndex(params)
+	return err != nil
 }
 
 // NOTE
@@ -184,10 +279,10 @@ func (o *OBS) HideItem() *show.Scene {
 // should go-- first priority producerbot100
 // NEXT UP item hiding and unhiding! and I GUESS looking up a specific item,
 // going to need to do that I GUESS if we want to control said ITEM
-func (o *OBS) GetProgramScene() *show.Scene {
+func (show *Show) GetProgramScene() *Scene {
 	params := &scenes.GetCurrentProgramSceneParams{}
 
-	response, err := o.Client.Scenes.GetCurrentProgramScene(params)
+	response, err := show.OBS.Scenes.GetCurrentProgramScene(params)
 	if err != nil {
 		return nil
 	}
@@ -197,13 +292,13 @@ func (o *OBS) GetProgramScene() *show.Scene {
 		return nil
 	}
 
-	return o.Show.Scene(programSceneName)
+	return show.Scene(programSceneName)
 }
 
-func (o *OBS) GetPreviewScene() *show.Scene {
+func (show *Show) GetPreviewScene() *Scene {
 	params := &scenes.GetCurrentPreviewSceneParams{}
 
-	response, err := o.Client.Scenes.GetCurrentPreviewScene(params)
+	response, err := show.OBS.Scenes.GetCurrentPreviewScene(params)
 	if err != nil {
 		return nil
 	}
@@ -213,13 +308,13 @@ func (o *OBS) GetPreviewScene() *show.Scene {
 		return nil
 	}
 
-	return o.Show.Scene(previewSceneName)
+	return show.Scene(previewSceneName)
 }
 
-func (o *OBS) IsStudioMode() bool {
+func (show *Show) IsStudioMode() bool {
 	params := &scenes.GetCurrentPreviewSceneParams{}
 
-	response, err := o.Client.Scenes.GetCurrentPreviewScene(params)
+	response, err := show.OBS.Scenes.GetCurrentPreviewScene(params)
 	if err != nil {
 		return false
 	}
@@ -228,8 +323,8 @@ func (o *OBS) IsStudioMode() bool {
 	return len(previewSceneName) != 0
 }
 
-func (o *OBS) SceneTransition(scene *show.Scene) (bool, error) {
-	if o.Show.ProgramScene.Index == scene.Index {
+func (show *Show) SceneTransition(scene *Scene) (bool, error) {
+	if show.ProgramScene.Index == scene.Index {
 		return false, fmt.Errorf("scene already program scene")
 	}
 
@@ -237,11 +332,11 @@ func (o *OBS) SceneTransition(scene *show.Scene) (bool, error) {
 		SceneName: scene.Name,
 	}
 
-	_, err := o.Client.Scenes.SetCurrentProgramScene(params)
+	_, err := show.OBS.Scenes.SetCurrentProgramScene(params)
 	if err != nil {
 		return false, err
 	}
 
-	o.Show.ProgramScene = scene
+	show.ProgramScene = scene
 	return true, nil
 }
