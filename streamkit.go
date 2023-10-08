@@ -89,6 +89,7 @@ func New() (toolkit *Toolkit) {
 			fmt.Printf("  1. then we transition to Primary\n")
 			primaryScene.Transition()
 			fmt.Printf("  2. then we HIDE research browser\n")
+			time.Sleep(1 * time.Second)
 			browserItem.Hide()
 		case xserver.Browser:
 			fmt.Printf("we got BROWSER type, so wait 3 seconds...\n")
@@ -96,6 +97,7 @@ func New() (toolkit *Toolkit) {
 			fmt.Printf("  1. then we transition to Primary\n")
 			primaryScene.Transition()
 			fmt.Printf("  2. then we UNHIDE research browser\n")
+			time.Sleep(1 * time.Second)
 			browserItem.Unhide()
 		default:
 			fmt.Printf("we got a undefined type, thats cool, probably desktop...\n")
