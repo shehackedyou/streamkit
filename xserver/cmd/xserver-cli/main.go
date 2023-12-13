@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	xserver "github.com/shehackedyou/streamkit/xserver"
@@ -9,8 +10,14 @@ import (
 )
 
 func main() {
+	client, err := xserver.Connect(xserver.DefaultConfig()["host"])
+	if err != nil {
+		fmt.Errorf("failed to connect to xserver")
+		panic(err)
+	}
+
 	x11 := xserver.X11{
-		Client: xserver.Connect(xserver.DefaultConfig()["host"]),
+		Client: client,
 	}
 
 	cmd, initErrors := cli.New(cli.App{

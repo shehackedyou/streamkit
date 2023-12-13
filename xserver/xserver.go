@@ -29,8 +29,13 @@ type X11 struct {
 }
 
 func NewWindowManager(host string) *X11 {
+	client, err := Connect(host)
+	if err != nil {
+		panic(err)
+	}
+
 	x := &X11{
-		Client:   Connect(host),
+		Client:   client,
 		OnChange: make(map[ChangeType]func()),
 	}
 	x.Window = x.ActiveWindow()
@@ -43,16 +48,16 @@ func DefaultConfig() map[string]string {
 	}
 }
 
-func Connect(host string) (client *x11.Conn) {
+func Connect(host string) (client *x11.Conn, err error) {
 	// TODO: Default is going to check localhost:10.0 so we try 11.0
-	client, err := x11.NewConn()
+	client, err = x11.NewConn()
 	if err != nil {
 		client, err = x11.NewConnDisplay(host)
 		if err != nil {
 			panic(err)
 		}
 	}
-	return client
+	return client, err
 }
 
 func (x *X11) ActiveWindowMonitor() (err error) {
