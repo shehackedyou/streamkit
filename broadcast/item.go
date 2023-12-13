@@ -90,6 +90,10 @@ func (is Items) YAML(spaces int) {
 	}
 }
 
+// TODO: I get we have to pass it to obs as float64 but its a fucking integer
+//
+//	so why are we fighting with making it a float64 when we can do that
+//	conversion later?
 type Item struct {
 	Scene  *Scene
 	Parent *Item

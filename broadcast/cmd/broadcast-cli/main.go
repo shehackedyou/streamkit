@@ -148,6 +148,7 @@ func main() {
 							cli.Flag{
 								Name:        "id",
 								Alias:       "i",
+								Default:     "0",
 								Description: "Select by id from selected scene",
 							},
 							cli.Flag{
@@ -175,33 +176,46 @@ func main() {
 							c.CLI.Log("scene > items")
 							sceneName := c.Flag("name").String()
 							if len(sceneName) == 0 {
-								fmt.Printf("failed to provide scene name")
+								fmt.Printf("is id flag valid? %v\n", c.HasFlag("id"))
+
+								//fmt.Printf("is id flag value? %v\n", c.Flag("id").SetDefault())
+								fmt.Printf("is id flag value? %v\n", c.Flag("id"))
+								fmt.Printf("is id flag float64 value? %v\n", c.Flag("id").Float64())
+
 								return fmt.Errorf("failed to provide scene name")
 							}
 
 							if scene := show.Scene(sceneName); scene != nil {
-								itemId := c.Flag("id").Float64()
-								if itemId != -1 {
-									if item := scene.ItemById(itemId); item != nil {
-										item.YAML(2)
+								c.CLI.Log("but should never get here if sceneName is empty %v\n", sceneName)
 
-										if hide := c.Flag("hide").Bool(); hide != false {
-											fmt.Printf("Hiding item\n")
-											item.Hide()
-										} else if unhide := c.Flag("unhide").Bool(); unhide != false {
-											fmt.Printf("Unhiding item\n")
-											item.Unhide()
-										} else if lock := c.Flag("lock").Bool(); lock != false {
-											fmt.Printf("Locking item\n")
-											item.Lock()
-										} else if unlock := c.Flag("unlock").Bool(); unlock != false {
-											fmt.Printf("Unlocking item\n")
-											item.Unlock()
-										}
+								c.CLI.Log("is flag valid? %v\n", c.Flag("id").String())
 
-										return nil
-									}
-								}
+								idLength := c.Flag("id").String()
+								c.CLI.Log("string idLength is: %v\n", idLength)
+
+								//itemId := c.Flag("id").Float64()
+
+								//if itemId != -1 {
+								//	if item := scene.ItemById(itemId); item != nil {
+								//		item.YAML(2)
+
+								//		if hide := c.Flag("hide").Bool(); hide != false {
+								//			fmt.Printf("Hiding item\n")
+								//			item.Hide()
+								//		} else if unhide := c.Flag("unhide").Bool(); unhide != false {
+								//			fmt.Printf("Unhiding item\n")
+								//			item.Unhide()
+								//		} else if lock := c.Flag("lock").Bool(); lock != false {
+								//			fmt.Printf("Locking item\n")
+								//			item.Lock()
+								//		} else if unlock := c.Flag("unlock").Bool(); unlock != false {
+								//			fmt.Printf("Unlocking item\n")
+								//			item.Unlock()
+								//		}
+
+								//		return nil
+								//	}
+								//}
 								scene.YAML(0)
 							} else {
 								fmt.Printf("failed to locate scene")
