@@ -10,10 +10,12 @@ github.com/hashicorp/logutils v1.0.0 h1:dLEQVugN8vlakKOUE3ihGLTZJRB4j+M2cdTm/ORI
 github.com/hashicorp/logutils v1.0.0/go.mod h1:QIAnNjmIWmVIIkWDTG1z5v++HQmx9WQRO+LraFDTW64=
 github.com/multiverse-os/ansi v0.0.0-20230122075550-10efed87b9d4 h1:p+XBNkUPCBHf3fxTvcxGNZWNKIvBlTyVI33bgn/mBaw=
 github.com/multiverse-os/ansi v0.0.0-20230122075550-10efed87b9d4/go.mod h1:PD6H6rUJ4GvsipdGr0+zxn2pxLA7NCXOLDhPt7mnd/E=
-github.com/multiverse-os/ansi v0.0.0-20230212053502-2711fc61f14d h1:QrB5B1ejsycBqO32lnqdehSD/uuVdxa9g4Lc9ekGG98=
-github.com/multiverse-os/ansi v0.0.0-20230212053502-2711fc61f14d/go.mod h1:PD6H6rUJ4GvsipdGr0+zxn2pxLA7NCXOLDhPt7mnd/E=
+github.com/multiverse-os/ansi v0.1.0 h1:7eXsAL9bqYDMYW90lDQCkFQWNqD40OlnPh9s06ARtBg=
+github.com/multiverse-os/ansi v0.1.0/go.mod h1:PD6H6rUJ4GvsipdGr0+zxn2pxLA7NCXOLDhPt7mnd/E=
 github.com/multiverse-os/banner v0.0.0-20230122081958-39bc0e2a3c54 h1:XTPa/8woBxT03a+zhkKFeMIscKcEdeX7shffveWcxjE=
 github.com/multiverse-os/banner v0.0.0-20230122081958-39bc0e2a3c54/go.mod h1:iKsSBKiFih4XCe4D3z4W/USY/q1ZKCMSaUFWkU/F6j4=
+github.com/multiverse-os/cli v0.0.0-20230212101701-e7017a44551d h1:JfuyR4Iqo/VBRtHe7E0Y74LahlnP9lgN9R3BVTkaVxg=
+github.com/multiverse-os/cli v0.0.0-20230212101701-e7017a44551d/go.mod h1:bW/xdho0c1y3DxQgIf3ag4Zb34C3JV5svCnzLpzKO90=
 github.com/multiverse-os/loading v0.0.0-20230205140225-67dcaf84ca47 h1:1Q+zcWmKXEy8UmUKolgQN2WyFxFdaTb8jQVnX6/6NEk=
 github.com/multiverse-os/loading v0.0.0-20230205140225-67dcaf84ca47/go.mod h1:MHfsgTzzFt3DbzPhiDfxrMK0PNaG2JWt55CK8KkPXDU=
 github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d h1:VhgPp6v9qf9Agr/56bj7Y/xa04UccTW04VP0Qed4vnQ=

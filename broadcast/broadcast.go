@@ -27,9 +27,15 @@ import (
 type OBS *goobs.Client
 
 func OpenShow(name, host string) *Show {
+	client, err := Connect(host)
+	if err != nil {
+		fmt.Errorf("failed to connect to obs")
+		panic(err)
+	}
+
 	show := &Show{
 		Name:         name,
-		OBS:          Connect(host),
+		OBS:          client,
 		ProgramScene: EmptyScene(),
 		PreviewScene: EmptyScene(),
 		Scenes:       EmptyScenes(),
@@ -50,12 +56,8 @@ func DefaultConfig() map[string]string {
 	}
 }
 
-func Connect(host string) OBS {
-	client, err := goobs.New(host)
-	if err != nil {
-		panic(err)
-	}
-	return client
+func Connect(host string) (OBS, error) {
+	return goobs.New(host)
 }
 
 func (show *Show) GetSceneList() Scenes {
