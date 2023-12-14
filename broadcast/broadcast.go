@@ -2,6 +2,7 @@ package broadcast
 
 import (
 	"fmt"
+	"os"
 
 	goobs "github.com/andreykaipov/goobs"
 
@@ -29,8 +30,8 @@ type OBS *goobs.Client
 func OpenShow(name, host string) *Show {
 	client, err := Connect(host)
 	if err != nil {
-		fmt.Errorf("failed to connect to obs")
-		panic(err)
+		fmt.Printf("failed to connect to obs: %v\n", err)
+		os.Exit(1)
 	}
 
 	show := &Show{
