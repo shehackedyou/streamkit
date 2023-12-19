@@ -2,7 +2,6 @@ package broadcast
 
 import (
 	"fmt"
-	"os"
 
 	goobs "github.com/andreykaipov/goobs"
 
@@ -27,11 +26,10 @@ import (
 // This is one of the clever ways to add methods to struct from other module
 type OBS *goobs.Client
 
-func OpenShow(name, host string) *Show {
+func OpenShow(name, host string) (*Show, error) {
 	client, err := Connect(host)
 	if err != nil {
-		fmt.Printf("failed to connect to obs: %v\n", err)
-		os.Exit(1)
+		return nil, err
 	}
 
 	show := &Show{
@@ -47,7 +45,7 @@ func OpenShow(name, host string) *Show {
 	show.ProgramScene = show.GetProgramScene()
 	show.PreviewScene = show.GetPreviewScene()
 
-	return show
+	return show, nil
 }
 
 func DefaultConfig() map[string]string {
