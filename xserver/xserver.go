@@ -28,10 +28,10 @@ type X11 struct {
 	//Windows
 }
 
-func NewWindowManager(host string) *X11 {
+func NewWindowManager(host string) (*X11, error) {
 	client, err := Connect(host)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	x := &X11{
@@ -39,7 +39,7 @@ func NewWindowManager(host string) *X11 {
 		OnChange: make(map[ChangeType]func()),
 	}
 	x.Window = x.ActiveWindow()
-	return x
+	return x, nil
 }
 
 func DefaultConfig() map[string]string {
