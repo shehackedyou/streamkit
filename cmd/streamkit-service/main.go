@@ -10,7 +10,11 @@ import (
 )
 
 func main() {
-	toolkit := streamkit.New()
+	toolkit, err := streamkit.New()
+	if err != nil {
+		fmt.Printf("failed to load streamkit...%v\n", err)
+		os.Exit(1)
+	}
 
 	cmd, initErrors := cli.New(cli.App{
 		Name:        "streamkit-service",
