@@ -10,10 +10,13 @@ import (
 )
 
 func main() {
-	show := broadcast.OpenShow(
+	show, err := broadcast.OpenShow(
 		broadcast.DefaultConfig()["name"],
 		broadcast.DefaultConfig()["host"],
 	)
+	if err != nil {
+		fmt.Errorf("failed to open show: %v\n", err)
+	}
 
 	// TODO: Need to create a disconnect function
 	//defer client.Disconnect()
