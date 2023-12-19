@@ -49,7 +49,7 @@ func DefaultConfig() map[string]string {
 
 // TODO: Obvio we need to be passing in the fucking config not just have it be
 // hardcoded like shitty law
-func New() (toolkit *Toolkit) {
+func New() (*Toolkit, error) {
 	// TODO: Show should be from config, and obs and x11 information. Logically
 	// stored in ~/.config/$APP_NAME and the local data should be
 	// ~/.local/share/$APP_NAME
@@ -63,14 +63,29 @@ func New() (toolkit *Toolkit) {
 	appName := "streamkit"
 	userHome, _ := os.UserHomeDir()
 
-	toolkit = &Toolkit{
+	fmt.Printf("attempting to connect to obs...\n")
+
+	show, err := broadcast.OpenShow(
+		toolkitConfig["name"],
+		toolkitConfig["obs"],
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("attempting to connect to xserver...\n")
+
+	x, err := xserver.NewWindowManager(toolkitConfig["xserver"])
+	if err != nil {
+		return nil, err
+	}
+
+	toolkit := &Toolkit{
 		Config: toolkitConfig,
-		Show: broadcast.OpenShow(
-			toolkitConfig["name"],
-			toolkitConfig["obs"],
-		),
-		X11:   xserver.NewWindowManager(toolkitConfig["xserver"]),
-		Delay: 1500 * time.Millisecond,
+		Show:   show,
+		X11:    x,
+		Delay:  1500 * time.Millisecond,
 		Paths: map[PathType]Path{
 			Config: Path(fmt.Sprintf("%v/.config/%v", userHome, appName)),
 			Data:   Path(fmt.Sprintf("%v/.local/share/%v", userHome, appName)),
@@ -111,5 +126,5 @@ func New() (toolkit *Toolkit) {
 
 	toolkit.Show.YAML(0)
 
-	return toolkit
+	return toolkit, nil
 }
